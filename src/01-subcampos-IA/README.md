@@ -1,7 +1,7 @@
 # IA y Subcampos
 
 ## Responsable
-- Nombre del integrante
+- Roberto Roly Copa Mamani
 
 ## Objetivo
 Explicar qué es la Inteligencia Artificial y sus principales subcampos.

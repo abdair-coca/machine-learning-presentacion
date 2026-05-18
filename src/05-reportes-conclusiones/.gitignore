@@ -1,0 +1,5 @@
+# CodeGraph
+.codegraph/
+
+# Cursor (si no lo usas)
+.cursor/

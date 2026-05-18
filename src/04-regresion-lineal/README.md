@@ -1,7 +1,7 @@
 # Modelo de Regresión Lineal
 
 ## Responsable
-- Nombre del integrante
+- Moises Torrez Huarina
 
 ---
 

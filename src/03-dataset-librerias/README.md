@@ -1,7 +1,7 @@
 # Dataset y Librerías
 
 ## Responsable
-- Nombre del integrante
+- Carlos Matos
 
 ## Objetivo
 Explicar qué es un dataset y las principales librerías utilizadas en Machine Learning.
