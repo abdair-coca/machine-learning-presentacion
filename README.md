@@ -21,7 +21,7 @@ El objetivo principal del proyecto es presentar conceptos fundamentales de **Mac
 | Integrante 2 | Línea de tiempo |
 | Integrante 3 | Datasets y librerías |
 | Integrante 4 | Regresión lineal |
-| Abdair | Reportes, conclusiones e integración del proyecto |
+| Abdair Coca | Reportes, conclusiones e integración del proyecto |
 
 ---
 
@@ -90,13 +90,7 @@ Esto evita conflictos.
 Cada integrante debe clonar el repositorio:
 
 ```bash
-git clone URL_DEL_REPOSITORIO
-```
-
-Ejemplo:
-
-```bash
-git clone https://github.com/usuario/repositorio.git
+git clone https://github.com/abdair-coca/machine-learning-presentacion
 ```
 
 ---
@@ -104,7 +98,7 @@ git clone https://github.com/usuario/repositorio.git
 ## 2. Entrar a la Carpeta del Proyecto
 
 ```bash
-cd nombre-del-repositorio
+cd machine-learning-presentacion
 ```
 
 ---
