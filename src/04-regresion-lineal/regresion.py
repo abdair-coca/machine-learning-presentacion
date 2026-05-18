@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 # Cargar  datos
-data = pd.read_csv('../../data/Housing.csv')
+data = pd.read_csv('/Housing.csv')
 X = data['lotsize']
 y = data['price']
 print(data)
