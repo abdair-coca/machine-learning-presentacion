@@ -1,518 +1,938 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ML Housing — Regresión Lineal Interactiva</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ML Housing — Regresión Lineal Interactiva</title>
 
-  <!-- Pyodide: Python real en el browser -->
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+    <!-- Pyodide: Python real en el browser -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
 
-  <style>
-    /* =============================================
+    <style>
+        /* =============================================
        VARIABLES Y RESET
     ============================================= */
-    :root {
-      --bg:          #0d1117;
-      --surface:     #161b22;
-      --surface2:    #21262d;
-      --border:      #30363d;
-      --accent:      #58a6ff;
-      --accent2:     #3fb950;
-      --accent3:     #f78166;
-      --text:        #e6edf3;
-      --text-muted:  #8b949e;
-      --font-mono:   'Courier New', monospace;
-      --nav-height:  56px;
-    }
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --surface2: #21262d;
+            --border: #30363d;
+            --accent: #58a6ff;
+            --accent2: #3fb950;
+            --accent3: #f78166;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --font-mono: 'Courier New', monospace;
+            --nav-height: 56px;
+        }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    html { scroll-behavior: smooth; }
+        html {
+            scroll-behavior: smooth;
+        }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 15px;
-      line-height: 1.6;
-      min-height: 100vh;
-    }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
 
-    /* =============================================
+        /* =============================================
        BARRA DE NAVEGACIÓN
     ============================================= */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: var(--nav-height);
-      background: rgba(13, 17, 23, 0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-      gap: 8px;
-    }
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            background: rgba(13, 17, 23, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 8px;
+        }
 
-    .nav-logo {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--accent2);
-      font-weight: bold;
-      letter-spacing: 0.05em;
-      margin-right: 16px;
-      white-space: nowrap;
-    }
+        .nav-logo {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--accent2);
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            margin-right: 16px;
+            white-space: nowrap;
+        }
 
-    .nav-logo span { color: var(--text-muted); }
+        .nav-logo span {
+            color: var(--text-muted);
+        }
 
-    .nav-tabs {
-      display: flex;
-      gap: 2px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .nav-tabs::-webkit-scrollbar { display: none; }
+        .nav-tabs {
+            display: flex;
+            gap: 2px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
 
-    .nav-tab {
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-muted);
-      cursor: pointer;
-      border: none;
-      background: transparent;
-      white-space: nowrap;
-      transition: color 0.15s, background 0.15s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .nav-tab:hover {
-      color: var(--text);
-      background: var(--surface2);
-    }
-    .nav-tab.active {
-      color: var(--accent);
-      background: rgba(88, 166, 255, 0.1);
-    }
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
 
-    .nav-tab .tab-number {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-muted);
-      background: var(--surface2);
-      border-radius: 3px;
-      padding: 1px 5px;
-    }
-    .nav-tab.active .tab-number {
-      background: rgba(88, 166, 255, 0.2);
-      color: var(--accent);
-    }
+        .nav-tab {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            white-space: nowrap;
+            transition: color 0.15s, background 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-    /* Indicador de estado de Pyodide */
-    .pyodide-status {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--text-muted);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .status-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--border);
-      flex-shrink: 0;
-      transition: background 0.3s;
-    }
-    .status-dot.loading { background: #d29922; animation: pulse 1.2s infinite; }
-    .status-dot.ready   { background: var(--accent2); }
-    .status-dot.error   { background: var(--accent3); }
+        .nav-tab:hover {
+            color: var(--text);
+            background: var(--surface2);
+        }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
+        .nav-tab.active {
+            color: var(--accent);
+            background: rgba(88, 166, 255, 0.1);
+        }
 
-    /* =============================================
+        .nav-tab .tab-number {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            background: var(--surface2);
+            border-radius: 3px;
+            padding: 1px 5px;
+        }
+
+        .nav-tab.active .tab-number {
+            background: rgba(88, 166, 255, 0.2);
+            color: var(--accent);
+        }
+
+        /* Indicador de estado de Pyodide */
+        .pyodide-status {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--border);
+            flex-shrink: 0;
+            transition: background 0.3s;
+        }
+
+        .status-dot.loading {
+            background: #d29922;
+            animation: pulse 1.2s infinite;
+        }
+
+        .status-dot.ready {
+            background: var(--accent2);
+        }
+
+        .status-dot.error {
+            background: var(--accent3);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* =============================================
        SECCIONES
     ============================================= */
-    .section {
-      display: none;
-      min-height: calc(100vh - var(--nav-height));
-      padding: calc(var(--nav-height) + 40px) 24px 60px;
-      max-width: 960px;
-      margin: 0 auto;
-    }
-    .section.active { display: block; }
+        .section {
+            display: none;
+            min-height: calc(100vh - var(--nav-height));
+            padding: calc(var(--nav-height) + 40px) 24px 60px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
 
-    /* =============================================
+        .section.active {
+            display: block;
+        }
+
+        /* =============================================
        COMPONENTES BASE
     ============================================= */
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 8px;
-      line-height: 1.3;
-    }
-    h2 {
-      font-size: 20px;
-      font-weight: 600;
-      color: var(--text);
-      margin: 32px 0 12px;
-    }
-    h3 {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-      margin: 20px 0 8px;
-    }
-    p {
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-    strong { color: var(--text); }
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
 
-    .section-header {
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 20px;
-      margin-bottom: 32px;
-    }
-    .section-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--accent);
-      background: rgba(88, 166, 255, 0.1);
-      border: 1px solid rgba(88, 166, 255, 0.2);
-      border-radius: 4px;
-      padding: 3px 8px;
-      margin-bottom: 12px;
-    }
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 32px 0 12px;
+        }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 16px;
-    }
+        h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 20px 0 8px;
+        }
 
-    .placeholder-content {
-      background: var(--surface);
-      border: 1px dashed var(--border);
-      border-radius: 10px;
-      padding: 48px 24px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-    .placeholder-content .icon {
-      font-size: 32px;
-      margin-bottom: 12px;
-      display: block;
-    }
+        p {
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
 
-    /* =============================================
+        strong {
+            color: var(--text);
+        }
+
+        .section-header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 32px;
+        }
+
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--accent);
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+            border-radius: 4px;
+            padding: 3px 8px;
+            margin-bottom: 12px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .placeholder-content {
+            background: var(--surface);
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+            padding: 48px 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .placeholder-content .icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* =============================================
+   SECCIÓN 1 — TARJETAS DE CONCEPTO
+============================================= */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .concept-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .concept-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .concept-card .card-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .concept-card .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .concept-card .card-body {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.55;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .two-col .col-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+        }
+
+        .two-col .col-card h3 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .two-col .col-card.accent-blue h3 {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .two-col .col-card.accent-green h3 {
+            color: var(--accent2);
+            border-color: var(--accent2);
+        }
+
+        .two-col .col-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .two-col .col-card ul li {
+            font-size: 13px;
+            color: var(--text-muted);
+            padding: 4px 0;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .two-col .col-card ul li::before {
+            content: '–';
+            position: absolute;
+            left: 0;
+            color: var(--text-muted);
+        }
+
+        /* =============================================
+   SECCIÓN 2 — DATASET
+============================================= */
+
+        /* --- Tarjetas de estadísticas --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 16px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-card .stat-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* --- Tabla del dataset --- */
+        .dataset-table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+
+        .dataset-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            font-family: var(--font-mono);
+        }
+
+        .dataset-table th {
+            background: var(--surface2);
+            color: var(--accent);
+            padding: 8px 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .dataset-table td {
+            padding: 6px 12px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .dataset-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .dataset-table tr:hover td {
+            background: var(--surface2);
+            color: var(--text);
+        }
+
+        .dataset-table td.highlight {
+            color: var(--accent2);
+            font-weight: 600;
+        }
+
+        /* --- Paginación --- */
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 12px 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .pagination button {
+            padding: 4px 12px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.15s;
+        }
+
+        .pagination button:hover {
+            background: var(--surface2);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        /* --- Canvas del scatter plot --- */
+        .plot-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .plot-wrap canvas,
+        .plot-wrap img {
+            max-width: 100%;
+            border-radius: 6px;
+        }
+
+        .plot-status {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            margin-top: 8px;
+        }
+
+        /* =============================================
        PANTALLA DE CARGA DE PYODIDE
     ============================================= */
-    #pyodide-loader {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      gap: 16px;
-      transition: opacity 0.4s;
-    }
-    #pyodide-loader.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-    .loader-logo {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--accent2);
-      letter-spacing: 0.1em;
-    }
-    .loader-title {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .loader-subtitle {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-align: center;
-      max-width: 320px;
-    }
-    .loader-bar-wrap {
-      width: 280px;
-      height: 3px;
-      background: var(--surface2);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .loader-bar {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      border-radius: 2px;
-      width: 0%;
-      transition: width 0.4s ease;
-    }
-    .loader-step {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-muted);
-      min-height: 16px;
-    }
-  </style>
+        #pyodide-loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            gap: 16px;
+            transition: opacity 0.4s;
+        }
+
+        #pyodide-loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-logo {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--accent2);
+            letter-spacing: 0.1em;
+        }
+
+        .loader-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .loader-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 320px;
+        }
+
+        .loader-bar-wrap {
+            width: 280px;
+            height: 3px;
+            background: var(--surface2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loader-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .loader-step {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            min-height: 16px;
+        }
+    </style>
 </head>
+
 <body>
 
-  <!-- =============================================
+    <!-- =============================================
        PANTALLA DE CARGA
   ============================================= -->
-  <div id="pyodide-loader">
-    <div class="loader-logo">INF560 — Desarrollo Web Backend</div>
-    <div class="loader-title">ML Housing App</div>
-    <div class="loader-subtitle">Iniciando entorno Python en el navegador.<br>Esto solo ocurre una vez.</div>
-    <div class="loader-bar-wrap">
-      <div class="loader-bar" id="loader-bar"></div>
+    <div id="pyodide-loader">
+        <div class="loader-logo">INF520 — Modelos y simulacion</div>
+        <div class="loader-title">ML Housing App</div>
+        <div class="loader-subtitle">Iniciando entorno Python en el navegador.<br>Esto solo ocurre una vez.</div>
+        <div class="loader-bar-wrap">
+            <div class="loader-bar" id="loader-bar"></div>
+        </div>
+        <div class="loader-step" id="loader-step">Cargando Pyodide...</div>
     </div>
-    <div class="loader-step" id="loader-step">Cargando Pyodide...</div>
-  </div>
 
-  <!-- =============================================
+    <!-- =============================================
        NAVEGACIÓN
   ============================================= -->
-  <nav>
-    <div class="nav-logo">ml<span>/</span>housing</div>
+    <nav>
+        <div class="nav-logo">ml<span>/</span>housing</div>
 
-    <div class="nav-tabs" id="nav-tabs">
-      <button class="nav-tab active" data-section="s1">
-        <span class="tab-number">01</span> ¿Qué es ML?
-      </button>
-      <button class="nav-tab" data-section="s2">
-        <span class="tab-number">02</span> Dataset
-      </button>
-      <button class="nav-tab" data-section="s3">
-        <span class="tab-number">03</span> Código explicado
-      </button>
-      <button class="nav-tab" data-section="s4">
-        <span class="tab-number">04</span> Playground
-      </button>
-      <button class="nav-tab" data-section="s5">
-        <span class="tab-number">05</span> Reporte
-      </button>
-      <button class="nav-tab" data-section="s6">
-        <span class="tab-number">06</span> Conclusiones
-      </button>
-    </div>
+        <div class="nav-tabs" id="nav-tabs">
+            <button class="nav-tab active" data-section="s1">
+                <span class="tab-number">01</span> ¿Qué es ML?
+            </button>
+            <button class="nav-tab" data-section="s2">
+                <span class="tab-number">02</span> Dataset
+            </button>
+            <button class="nav-tab" data-section="s3">
+                <span class="tab-number">03</span> Código explicado
+            </button>
+            <button class="nav-tab" data-section="s4">
+                <span class="tab-number">04</span> Playground
+            </button>
+            <button class="nav-tab" data-section="s5">
+                <span class="tab-number">05</span> Reporte
+            </button>
+            <button class="nav-tab" data-section="s6">
+                <span class="tab-number">06</span> Conclusiones
+            </button>
+        </div>
 
-    <div class="pyodide-status">
-      <div class="status-dot loading" id="status-dot"></div>
-      <span id="status-text">Iniciando Python...</span>
-    </div>
-  </nav>
+        <div class="pyodide-status">
+            <div class="status-dot loading" id="status-dot"></div>
+            <span id="status-text">Iniciando Python...</span>
+        </div>
+    </nav>
 
-  <!-- =============================================
+    <!-- =============================================
        SECCIÓN 1 — ¿Qué es ML?
   ============================================= -->
-  <section class="section active" id="s1">
-    <div class="section-header">
-      <div class="section-badge">01 — Introducción</div>
-      <h1>¿Qué es Machine Learning?</h1>
-      <p>Contexto del proyecto y conceptos fundamentales antes de ver el código.</p>
-    </div>
+    <section class="section active" id="s1">
+        <div class="section-header">
+            <div class="section-badge">01 — Introducción</div>
+            <h1>¿Qué es Machine Learning?</h1>
+            <p>Contexto del proyecto y conceptos fundamentales antes de ver el código.</p>
+        </div>
 
-    <div class="placeholder-content">
-      <span class="icon">🧠</span>
-      Contenido de introducción — <strong>Guía 2</strong>
-    </div>
-  </section>
+        <div class="card">
+            <h2>¿Por qué existe el Machine Learning?</h2>
+            <p>
+                La programación clásica funciona así: tú escribes reglas explícitas y la
+                computadora las sigue. Pero hay problemas donde las reglas son demasiado
+                complejas o desconocidas — como predecir el precio de una casa.
+                Machine Learning le da la vuelta a eso: <strong>en vez de escribir las
+                    reglas, le damos ejemplos y el algoritmo aprende las reglas solo.</strong>
+            </p>
+            <p>
+                En este proyecto usamos uno de los algoritmos más simples y poderosos:
+                <strong>regresión lineal</strong>. Le damos 546 casas con sus características
+                y precios, y el modelo aprende la relación matemática entre ellos.
+            </p>
+        </div>
+        <div class="two-col">
+            <div class="col-card accent-blue">
+                <h3>Programación clásica</h3>
+                <ul>
+                    <li>Tú escribes las reglas</li>
+                    <li>Los datos entran, las respuestas salen</li>
+                    <li>Las reglas son explícitas y fijas</li>
+                    <li>Funciona bien para problemas con lógica clara</li>
+                </ul>
+            </div>
+            <div class="col-card accent-green">
+                <h3>Machine Learning</h3>
+                <ul>
+                    <li>Los datos + las respuestas entran</li>
+                    <li>El algoritmo <em>aprende</em> las reglas</li>
+                    <li>Las reglas son patrones estadísticos</li>
+                    <li>Funciona bien para patrones complejos</li>
+                </ul>
+            </div>
+        </div>
+        <h2>Conceptos que vas a necesitar</h2>
+        <div class="concept-grid">
 
-  <!-- =============================================
+            <div class="concept-card">
+                <span class="card-icon">📦</span>
+                <div class="card-title">Dataset</div>
+                <div class="card-body">
+                    La colección de ejemplos con la que entrenamos el modelo.
+                    En este proyecto: 546 casas con 13 características cada una.
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <span class="card-icon">🔢</span>
+                <div class="card-title">Feature (variable X)</div>
+                <div class="card-body">
+                    La información de entrada que usamos para predecir.
+                    En nuestro modelo: el tamaño del lote (<code>lotsize</code>).
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <span class="card-icon">🏷️</span>
+                <div class="card-title">Etiqueta (variable y)</div>
+                <div class="card-body">
+                    Lo que queremos predecir. En nuestro modelo:
+                    el precio de la casa (<code>price</code>).
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <span class="card-icon">📈</span>
+                <div class="card-title">Regresión lineal</div>
+                <div class="card-body">
+                    Encuentra la línea recta que mejor describe la relación
+                    entre X e y. La ecuación es: <code>precio = a × lotsize + b</code>.
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- =============================================
        SECCIÓN 2 — Dataset
   ============================================= -->
-  <section class="section" id="s2">
-    <div class="section-header">
-      <div class="section-badge">02 — Dataset</div>
-      <h1>El Dataset: Housing</h1>
-      <p>Exploración de los datos antes de entrenar cualquier modelo.</p>
-    </div>
+    <section class="section" id="s2">
+        <div class="section-header">
+            <div class="section-badge">02 — Dataset</div>
+            <h1>El Dataset: Housing</h1>
+            <p>Exploración de los datos antes de entrenar cualquier modelo.</p>
+        </div>
 
-    <div class="placeholder-content">
-      <span class="icon">📊</span>
-      Tabla, estadísticas y scatter plot — <strong>Guía 2</strong>
-    </div>
-  </section>
+        <!-- Stats dinámicas: JS las llena al cargar -->
+        <h2>Estadísticas del dataset</h2>
+        <div class="stats-grid" id="stats-grid">
+            <!-- Se genera con JavaScript -->
+        </div>
 
-  <!-- =============================================
+        <!-- Tabla paginada -->
+        <h2>Explorar los datos</h2>
+        <p>Mostrando las primeras filas. Usa los botones para navegar.</p>
+
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+            <input id="filter-min" type="number" placeholder="Precio mínimo" style="padding:6px 10px; background:var(--surface2);
+                border:1px solid var(--border); color:var(--text);
+                border-radius:5px; font-size:13px;">
+            <input id="filter-max" type="number" placeholder="Precio máximo" style="padding:6px 10px; background:var(--surface2);
+                border:1px solid var(--border); color:var(--text);
+                border-radius:5px; font-size:13px;">
+            <button onclick="aplicarFiltro()" style="padding:6px 14px; background:var(--accent);
+                 color:#000; border:none; border-radius:5px;
+                 cursor:pointer; font-size:13px; font-weight:600;">
+                Filtrar
+            </button>
+            <button onclick="limpiarFiltro()" style="padding:6px 14px; background:var(--surface2);
+                 color:var(--text); border:1px solid var(--border);
+                 border-radius:5px; cursor:pointer; font-size:13px;">
+                Limpiar
+            </button>
+        </div>
+
+        <div class="dataset-table-wrap">
+            <table class="dataset-table" id="dataset-table">
+                <thead id="table-head"></thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <button id="btn-prev" onclick="tablaPrev()">← Anterior</button>
+            <span id="page-info">Página 1</span>
+            <button id="btn-next" onclick="tablaSig()">Siguiente →</button>
+        </div>
+
+        <!-- Scatter plot -->
+        <h2>Distribución: lotsize vs price</h2>
+        <p>
+            Antes de entrenar el modelo, visualizamos la relación entre la
+            variable de entrada (lotsize) y la que queremos predecir (price).
+        </p>
+        <div class="plot-wrap">
+            <div id="scatter-plot">
+                <p class="plot-status">Esperando que Python cargue...</p>
+            </div>
+        </div>
+        <h2>Distribución: bedrooms vs price</h2>
+        <div class="plot-wrap">
+            <div id="scatter-bedrooms">
+                <p class="plot-status">Esperando Python...</p>
+            </div>
+        </div>
+
+
+    </section>
+
+    <!-- =============================================
        SECCIÓN 3 — Código explicado
   ============================================= -->
-  <section class="section" id="s3">
-    <div class="section-header">
-      <div class="section-badge">03 — Código explicado</div>
-      <h1>El Código, bloque por bloque</h1>
-      <p>Cada parte del código con su explicación y su propio botón de ejecución.</p>
-    </div>
+    <section class="section" id="s3">
+        <div class="section-header">
+            <div class="section-badge">03 — Código explicado</div>
+            <h1>El Código, bloque por bloque</h1>
+            <p>Cada parte del código con su explicación y su propio botón de ejecución.</p>
+        </div>
 
-    <div class="placeholder-content">
-      <span class="icon">📝</span>
-      Bloques de código con CodeMirror — <strong>Guía 3</strong>
-    </div>
-  </section>
+        <div class="placeholder-content">
+            <span class="icon">📝</span>
+            Bloques de código con CodeMirror — <strong>Guía 3</strong>
+        </div>
+    </section>
 
-  <!-- =============================================
+    <!-- =============================================
        SECCIÓN 4 — Playground
   ============================================= -->
-  <section class="section" id="s4">
-    <div class="section-header">
-      <div class="section-badge">04 — Playground</div>
-      <h1>Playground Interactivo</h1>
-      <p>Edita el código, cambia parámetros y ejecuta. Los resultados se actualizan en vivo.</p>
-    </div>
+    <section class="section" id="s4">
+        <div class="section-header">
+            <div class="section-badge">04 — Playground</div>
+            <h1>Playground Interactivo</h1>
+            <p>Edita el código, cambia parámetros y ejecuta. Los resultados se actualizan en vivo.</p>
+        </div>
 
-    <div class="placeholder-content">
-      <span class="icon">⚡</span>
-      Editor completo + gráficas en vivo — <strong>Guía 4</strong>
-    </div>
-  </section>
+        <div class="placeholder-content">
+            <span class="icon">⚡</span>
+            Editor completo + gráficas en vivo — <strong>Guía 4</strong>
+        </div>
+    </section>
 
-  <!-- =============================================
+    <!-- =============================================
        SECCIÓN 5 — Reporte
   ============================================= -->
-  <section class="section" id="s5">
-    <div class="section-header">
-      <div class="section-badge">05 — Reporte</div>
-      <h1>Reporte del Modelo</h1>
-      <p>Interpretación automática de los resultados según lo que ejecutaste en el Playground.</p>
-    </div>
+    <section class="section" id="s5">
+        <div class="section-header">
+            <div class="section-badge">05 — Reporte</div>
+            <h1>Reporte del Modelo</h1>
+            <p>Interpretación automática de los resultados según lo que ejecutaste en el Playground.</p>
+        </div>
 
-    <div class="placeholder-content">
-      <span class="icon">📋</span>
-      Reporte dinámico (MSE, R², interpretación) — <strong>Guía 4</strong>
-    </div>
-  </section>
+        <div class="placeholder-content">
+            <span class="icon">📋</span>
+            Reporte dinámico (MSE, R², interpretación) — <strong>Guía 4</strong>
+        </div>
+    </section>
 
-  <!-- =============================================
+    <!-- =============================================
        SECCIÓN 6 — Conclusiones
   ============================================= -->
-  <section class="section" id="s6">
-    <div class="section-header">
-      <div class="section-badge">06 — Conclusiones e Integración</div>
-      <h1>Conclusiones del Proyecto</h1>
-      <p>Qué aprendimos, qué limitaciones tiene el modelo, y cómo encaja en el panorama de ML.</p>
-    </div>
+    <section class="section" id="s6">
+        <div class="section-header">
+            <div class="section-badge">06 — Conclusiones e Integración</div>
+            <h1>Conclusiones del Proyecto</h1>
+            <p>Qué aprendimos, qué limitaciones tiene el modelo, y cómo encaja en el panorama de ML.</p>
+        </div>
 
-    <div class="placeholder-content">
-      <span class="icon">🎯</span>
-      Conclusiones e integración del equipo — <strong>Guía 5</strong>
-    </div>
-  </section>
+        <div class="placeholder-content">
+            <span class="icon">🎯</span>
+            Conclusiones e integración del equipo — <strong>Guía 5</strong>
+        </div>
+    </section>
 
-  <!-- =============================================
+    <!-- =============================================
        JAVASCRIPT: NAVEGACIÓN + PYODIDE
   ============================================= -->
-  <script>
-    /* ---- NAVEGACIÓN ---- */
-    const tabs    = document.querySelectorAll('.nav-tab');
-    const sections = document.querySelectorAll('.section');
+    <script>
+        /* ---- NAVEGACIÓN ---- */
+        const tabs = document.querySelectorAll('.nav-tab');
+        const sections = document.querySelectorAll('.section');
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const target = tab.dataset.section;
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.section;
 
-        // Desactivar todo
-        tabs.forEach(t => t.classList.remove('active'));
-        sections.forEach(s => s.classList.remove('active'));
+                // Desactivar todo
+                tabs.forEach(t => t.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
 
-        // Activar el seleccionado
-        tab.classList.add('active');
-        document.getElementById(target).classList.add('active');
-      });
-    });
+                // Activar el seleccionado
+                tab.classList.add('active');
+                document.getElementById(target).classList.add('active');
+            });
+        });
 
-    /* ---- PYODIDE SETUP ---- */
-    const loaderEl   = document.getElementById('pyodide-loader');
-    const loaderBar  = document.getElementById('loader-bar');
-    const loaderStep = document.getElementById('loader-step');
-    const statusDot  = document.getElementById('status-dot');
-    const statusText = document.getElementById('status-text');
+        /* ---- PYODIDE SETUP ---- */
+        const loaderEl = document.getElementById('pyodide-loader');
+        const loaderBar = document.getElementById('loader-bar');
+        const loaderStep = document.getElementById('loader-step');
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
 
-    // Estado global compartido entre secciones
-    window.AppState = {
-      pyodide: null,           // instancia de Pyodide
-      pyodideReady: false,     // bandera de listo
-      lastResults: null,       // { mse, r2 } del último run en Playground
-    };
+        // Estado global compartido entre secciones
+        window.AppState = {
+            pyodide: null,           // instancia de Pyodide
+            pyodideReady: false,     // bandera de listo
+            lastResults: null,       // { mse, r2 } del último run en Playground
+        };
 
-    function setLoaderStep(text, percent) {
-      loaderStep.textContent = text;
-      loaderBar.style.width  = percent + '%';
-    }
+        function setLoaderStep(text, percent) {
+            loaderStep.textContent = text;
+            loaderBar.style.width = percent + '%';
+        }
 
-    function setStatus(state, text) {
-      statusDot.className = 'status-dot ' + state;
-      statusText.textContent = text;
-    }
+        function setStatus(state, text) {
+            statusDot.className = 'status-dot ' + state;
+            statusText.textContent = text;
+        }
 
-    async function initPyodide() {
-      try {
-        setLoaderStep('Descargando Pyodide...', 10);
-        setStatus('loading', 'Iniciando Python...');
+        async function initPyodide() {
+            try {
+                setLoaderStep('Descargando Pyodide...', 10);
+                setStatus('loading', 'Iniciando Python...');
 
-        // Cargar Pyodide
-        const pyodide = await loadPyodide();
-        setLoaderStep('Instalando numpy y pandas...', 40);
+                // Cargar Pyodide
+                const pyodide = await loadPyodide();
+                setLoaderStep('Instalando numpy y pandas...', 40);
 
-        // Instalar paquetes necesarios
-        await pyodide.loadPackage(['numpy', 'pandas', 'matplotlib', 'scikit-learn']);
-        setLoaderStep('Configurando entorno...', 80);
+                // Instalar paquetes necesarios
+                await pyodide.loadPackage(['numpy', 'pandas', 'matplotlib', 'scikit-learn']);
+                setLoaderStep('Configurando entorno...', 80);
 
-        // Cargar el CSV en el sistema de archivos virtual de Pyodide
-        const csvData = getCSVData();
-        pyodide.FS.writeFile('/Housing.csv', csvData);
-        setLoaderStep('Listo.', 100);
+                // Cargar el CSV en el sistema de archivos virtual de Pyodide
+                const csvData = getCSVData();
+                pyodide.FS.writeFile('/Housing.csv', csvData);
+                setLoaderStep('Listo.', 100);
 
-        // Guardar en estado global
-        window.AppState.pyodide = pyodide;
-        window.AppState.pyodideReady = true;
+                // Guardar en estado global
+                window.AppState.pyodide = pyodide;
+                window.AppState.pyodideReady = true;
 
-        // Actualizar UI
-        setStatus('ready', 'Python listo');
-        setTimeout(() => {
-          loaderEl.classList.add('hidden');
-        }, 400);
+                // Actualizar UI
+                setStatus('ready', 'Python listo');
+                setTimeout(() => {
+                    loaderEl.classList.add('hidden');
+                }, 400);
 
-        // Disparar evento para que otras secciones sepan que está listo
-        window.dispatchEvent(new Event('pyodide-ready'));
+                // Disparar evento para que otras secciones sepan que está listo
+                window.dispatchEvent(new Event('pyodide-ready'));
 
-      } catch (err) {
-        console.error('Error iniciando Pyodide:', err);
-        setStatus('error', 'Error al cargar Python');
-        loaderStep.textContent = 'Error: ' + err.message;
-        loaderStep.style.color = 'var(--accent3)';
-      }
-    }
+            } catch (err) {
+                console.error('Error iniciando Pyodide:', err);
+                setStatus('error', 'Error al cargar Python');
+                loaderStep.textContent = 'Error: ' + err.message;
+                loaderStep.style.color = 'var(--accent3)';
+            }
+        }
 
-    /* ---- DATOS CSV EMBEBIDOS ---- */
-    // El CSV está embebido para que la app funcione sin servidor
-    function getCSVData() {
-      return `rownames,price,lotsize,bedrooms,bathrms,stories,driveway,recroom,fullbase,gashw,airco,garagepl,prefarea
+        /* ---- DATOS CSV EMBEBIDOS ---- */
+        // El CSV está embebido para que la app funcione sin servidor
+        function getCSVData() {
+            return `rownames,price,lotsize,bedrooms,bathrms,stories,driveway,recroom,fullbase,gashw,airco,garagepl,prefarea
 1,42000,5850,3,1,2,yes,no,yes,no,no,1,no
 2,38500,4000,2,1,1,yes,no,no,no,no,0,no
 3,49500,3060,3,1,1,yes,no,no,no,no,0,no
@@ -1059,11 +1479,259 @@
 544,103000,6000,3,2,4,yes,yes,no,no,yes,1,no
 545,105000,6000,3,2,2,yes,yes,no,no,yes,1,no
 546,105000,6000,3,1,2,yes,no,no,no,yes,1,no`;
-    }
+        }
 
-    /* ---- INICIAR ---- */
-    initPyodide();
-  </script>
+        /* ---- INICIAR ---- */
+        initPyodide();
+        // ---- PARSEO DEL CSV ----
+        // Convierte el string CSV en array de objetos
+        // Resultado: [ {rownames:'1', price:'42000', lotsize:'5850', ...}, ... ]
+        function parseCSV(csvString) {
+            const lines = csvString.trim().split('\n');
+            const headers = lines[0].split(',');
+            return lines.slice(1).map(line => {
+                const values = line.split(',');
+                const row = {};
+                headers.forEach((h, i) => row[h.trim()] = values[i]?.trim() ?? '');
+                return row;
+            });
+        }
+
+        // Variable global: array con las 546 filas ya parseadas
+        // Se llena en initSeccion2() y se usa en la tabla y las stats
+        window.AppState.csvRows = [];
+
+
+        // ---- ESTADÍSTICAS DESCRIPTIVAS ----
+        // Calcula y renderiza las 4 tarjetas de stats del dataset
+        function renderStats(rows) {
+            const prices = rows.map(r => parseInt(r.price));
+            const lots = rows.map(r => parseInt(r.lotsize));
+
+            const fmt = (n) => '$' + Math.round(n).toLocaleString('en-US');
+
+            const stats = [
+                { label: 'Total de casas', value: rows.length, sub: 'registros en el dataset', color: '' },
+                { label: 'Precio mínimo', value: fmt(Math.min(...prices)), sub: 'casa más barata', color: '' },
+                { label: 'Precio máximo', value: fmt(Math.max(...prices)), sub: 'casa más cara', color: '' },
+                { label: 'Precio promedio', value: fmt(prices.reduce((a, b) => a + b, 0) / prices.length), sub: 'media del dataset', color: '' },
+                { label: 'Lotsize mínimo', value: Math.min(...lots) + ' ft²', sub: 'lote más pequeño', color: '' },
+                { label: 'Lotsize máximo', value: Math.max(...lots) + ' ft²', sub: 'lote más grande', color: '' },
+                { label: 'Columnas', value: Object.keys(rows[0]).length, sub: 'variables por casa' }
+
+            ];
+
+            document.getElementById('stats-grid').innerHTML = stats
+                .map(s => `
+      <div class='stat-card'>
+        <div class='stat-label'>${s.label}</div>
+        <div class='stat-value'>${s.value}</div>
+        <div class='stat-sub'>${s.sub}</div>
+      </div>`
+                ).join('');
+        }
+        // ---- TABLA PAGINADA ----
+        let currentPage = 0;
+        const ROWS_PER_PAGE = 20;
+
+        function renderTabla(rows) {
+            const start = currentPage * ROWS_PER_PAGE;
+            const end = Math.min(start + ROWS_PER_PAGE, rows.length);
+            const slice = rows.slice(start, end);
+            const total = Math.ceil(rows.length / ROWS_PER_PAGE);
+
+            // Columnas a mostrar (no mostramos 'rownames')
+            const cols = ['price', 'lotsize', 'bedrooms', 'bathrms', 'stories',
+                'driveway', 'recroom', 'fullbase', 'gashw', 'airco',
+                'garagepl', 'prefarea'];
+
+            // Encabezado
+            document.getElementById('table-head').innerHTML =
+                '<tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr>';
+
+            // Filas — resaltar price y lotsize
+            document.getElementById('table-body').innerHTML = slice.map(row =>
+                '<tr>' + cols.map(c => {
+                    const highlight = (c === 'price' || c === 'lotsize') ? ' class="highlight"' : '';
+                    return `<td${highlight}>${row[c]}</td>`;
+                }).join('') + '</tr>'
+            ).join('');
+
+            // Actualizar controles de paginación
+            document.getElementById('page-info').textContent =
+                `Mostrando filas ${start + 1}–${end} de ${rows.length}`;
+            document.getElementById('btn-prev').disabled = currentPage === 0;
+            document.getElementById('btn-next').disabled = currentPage >= total - 1;
+        }
+
+        function tablaPrev() {
+            if (currentPage > 0) { currentPage--; renderTabla(window.AppState.csvRows); }
+        }
+        function tablaSig() {
+            const total = Math.ceil(window.AppState.csvRows.length / ROWS_PER_PAGE);
+            if (currentPage < total - 1) { currentPage++; renderTabla(window.AppState.csvRows); }
+        }
+        // ---- SCATTER PLOT CON MATPLOTLIB ----
+        async function renderScatter() {
+            const plotDiv = document.getElementById('scatter-plot');
+            plotDiv.innerHTML = '<p class="plot-status">Generando gráfico con Python...</p>';
+
+            try {
+                const py = window.AppState.pyodide;
+
+                // Código Python que se ejecuta en el browser
+                const base64img = await py.runPythonAsync(`
+import pandas as pd
+import matplotlib
+matplotlib.use('Agg')  # Backend sin pantalla (obligatorio en browser)
+import matplotlib.pyplot as plt
+import io, base64
+
+data = pd.read_csv('/Housing.csv')
+
+fig, ax = plt.subplots(figsize=(8, 4.5))
+fig.patch.set_facecolor('#161b22')   # --surface
+ax.set_facecolor('#161b22')
+
+ax.scatter(data['lotsize'], data['price'],
+           alpha=0.5, color='#58a6ff', s=18, linewidths=0)
+
+ax.set_xlabel('lotsize (ft²)', color='#8b949e', fontsize=10)
+ax.set_ylabel('price ($)',     color='#8b949e', fontsize=10)
+ax.set_title('lotsize vs. price — Housing Dataset',
+             color='#e6edf3', fontsize=12, pad=12)
+
+ax.tick_params(colors='#8b949e')
+for spine in ax.spines.values(): spine.set_edgecolor('#30363d')
+ax.grid(True, color='#30363d', linewidth=0.5, linestyle='--')
+
+buf = io.BytesIO()
+plt.savefig(buf, format='png', dpi=120,
+            bbox_inches='tight', facecolor=fig.get_facecolor())
+plt.close()
+buf.seek(0)
+base64.b64encode(buf.read()).decode('utf-8')
+    `);
+
+                // Insertar la imagen en el DOM
+                plotDiv.innerHTML =
+                    `<img src='data:image/png;base64,${base64img}'
+            alt='Scatter plot: lotsize vs price' />
+       <p class='plot-status'>
+         Generado con matplotlib en Python — ${new Date().toLocaleTimeString()}
+       </p>`;
+
+            } catch (err) {
+                plotDiv.innerHTML =
+                    `<p class='plot-status' style='color:var(--accent3)'>
+         Error al generar el gráfico: ${err.message}
+       </p>`;
+                console.error('renderScatter error:', err);
+            }
+        }
+        async function renderScatterBedrooms() {
+
+            const plotDiv = document.getElementById('scatter-bedrooms');
+            plotDiv.innerHTML = '<p class="plot-status">Generando gráfico con Python...</p>';
+
+            try {
+                const py = window.AppState.pyodide;
+
+                // Código Python que se ejecuta en el browser
+                const base64img = await py.runPythonAsync(`
+import pandas as pd
+import matplotlib
+matplotlib.use('Agg')  # Backend sin pantalla (obligatorio en browser)
+import matplotlib.pyplot as plt
+import io, base64
+
+data = pd.read_csv('/Housing.csv')
+
+fig, ax = plt.subplots(figsize=(8, 4.5))
+fig.patch.set_facecolor('#161b22')   # --surface
+ax.set_facecolor('#161b22')
+
+ax.scatter(data['bedrooms'], data['price'],
+           alpha=0.5, color='#58a6ff', s=18, linewidths=0)
+
+ax.set_xlabel('bedrooms (ft²)', color='#8b949e', fontsize=10)
+ax.set_ylabel('price ($)',     color='#8b949e', fontsize=10)
+ax.set_title('bedrooms vs. price — Housing Dataset',
+             color='#e6edf3', fontsize=12, pad=12)
+
+ax.tick_params(colors='#8b949e')
+for spine in ax.spines.values(): spine.set_edgecolor('#30363d')
+ax.grid(True, color='#30363d', linewidth=0.5, linestyle='--')
+
+buf = io.BytesIO()
+plt.savefig(buf, format='png', dpi=120,
+            bbox_inches='tight', facecolor=fig.get_facecolor())
+plt.close()
+buf.seek(0)
+base64.b64encode(buf.read()).decode('utf-8')
+    `);
+
+                // Insertar la imagen en el DOM
+                plotDiv.innerHTML =
+                    `<img src='data:image/png;base64,${base64img}'
+            alt='Scatter plot: lotsize vs price' />
+       <p class='plot-status'>
+         Generado con matplotlib en Python — ${new Date().toLocaleTimeString()}
+       </p>`;
+
+            } catch (err) {
+                plotDiv.innerHTML =
+                    `<p class='plot-status' style='color:var(--accent3)'>
+         Error al generar el gráfico: ${err.message}
+       </p>`;
+                console.error('renderScatter error:', err);
+            }
+        }
+
+        // ---- COORDINADOR DE LA SECCIÓN 2 ----
+        // Orquesta la carga de datos, stats, tabla y gráfico
+        async function initSeccion2() {
+            // 1. Parsear el CSV en memoria (JS, sin Python)
+            const rows = parseCSV(getCSVData());
+            window.AppState.csvRows = rows;
+
+            // 2. Renderizar estadísticas
+            renderStats(rows);
+
+            // 3. Renderizar tabla paginada
+            renderTabla(rows);
+
+            // 4. Generar scatter plot (requiere Pyodide)
+            await renderScatter();
+            // 5. Generar scatter plot bedrooms vs price
+            await renderScatterBedrooms();
+        }
+
+        // Escuchar el evento que lanza initPyodide() cuando Python está listo
+        // (Este listener ya aprovecha el dispatchEvent de la Guía 1)
+        window.addEventListener('pyodide-ready', () => {
+            initSeccion2();
+        });
+        function aplicarFiltro() {
+            const min = parseInt(document.getElementById('filter-min').value) || 0;
+            const max = parseInt(document.getElementById('filter-max').value) || Infinity;
+            const filtered = window.AppState.csvRows.filter(r => {
+                const price = parseInt(r.price);
+                return price >= min && price <= max;
+            });
+            currentPage = 0;
+            renderTabla(filtered);
+        }
+
+        function limpiarFiltro() {
+            document.getElementById('filter-min').value = '';
+            document.getElementById('filter-max').value = '';
+            currentPage = 0;
+            renderTabla(window.AppState.csvRows);
+        }
+
+    </script>
 
 </body>
+
 </html>
