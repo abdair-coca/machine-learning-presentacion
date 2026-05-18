@@ -18,7 +18,7 @@ El objetivo principal del proyecto es presentar conceptos fundamentales de **Mac
 | Integrante | Responsabilidad |
 |---|---|
 | Integrante 1 | Subcampos de IA |
-| Integrante 2 | Línea de tiempo |
+| Juan Canaza | Línea de tiempo |
 | Integrante 3 | Datasets y librerías |
 | Integrante 4 | Regresión lineal |
 | Abdair Coca | Reportes, conclusiones e integración del proyecto |

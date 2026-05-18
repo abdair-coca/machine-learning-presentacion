@@ -1,7 +1,7 @@
 # Línea de Tiempo de la IA
 
 ## Responsable
-- Nombre del integrante
+- Juan David Canaza Zenteno
 
 ## Objetivo
 Mostrar la evolución histórica de la Inteligencia Artificial.
