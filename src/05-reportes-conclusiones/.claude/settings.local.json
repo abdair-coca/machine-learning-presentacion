@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sed -n '29,1069p' index.html)",
+      "Bash(sed -n '13,24p' index.html)",
+      "Bash(sed -n '1740,3215p' index.html)"
+    ]
+  }
+}
