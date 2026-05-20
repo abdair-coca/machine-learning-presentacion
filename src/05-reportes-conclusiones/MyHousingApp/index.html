@@ -9,7 +9,6 @@
     <!-- Pyodide: Python real en el browser -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
     <!-- CodeMirror 6 — editor de código con syntax highlighting -->
-    <!-- Reemplaza el script type="module" de CodeMirror por este: -->
     <script>
         async function loadCodeMirror() {
             const { EditorView, basicSetup } =
@@ -673,6 +672,337 @@
             display: block;
         }
 
+        /* =============================================
+   SECCIÓN 4 — PLAYGROUND
+============================================= */
+
+        /* Layout principal: editor a la izquierda, resultados a la derecha */
+        .playground-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .playground-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Panel izquierdo: editor + botones */
+        .pg-editor-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .pg-editor-panel .cm-wrap {
+            flex: 1;
+            min-height: 340px;
+        }
+
+        /* Barra de controles del Playground */
+        .pg-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn-primary {
+            padding: 8px 20px;
+            border-radius: 6px;
+            border: none;
+            background: var(--accent2);
+            color: #000;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.85;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        /* Panel derecho: métricas + gráfico */
+        .pg-results-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Tarjetas de métricas MSE y R² */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .metric-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 16px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .metric-card.updated {
+            border-color: var(--accent2);
+        }
+
+        .metric-card .metric-name {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+        }
+
+        .metric-card .metric-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .metric-card .metric-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* Panel de output del Playground (consola) */
+        .pg-console {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            min-height: 60px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .pg-console.error {
+            border-color: var(--accent3);
+            color: var(--accent3);
+        }
+
+        .pg-console.ok {
+            border-color: var(--accent2);
+        }
+
+        /* Área del gráfico del Playground */
+        .pg-plot {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pg-plot img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+
+        .pg-plot .pg-plot-placeholder {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        /* Indicador de estado global del Playground */
+        .pg-status-bar {
+            font-size: 12px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            padding: 4px 0;
+        }
+
+        /* =============================================
+   SECCIÓN 5 — REPORTE DINÁMICO
+============================================= */
+
+        /* Estado vacío: cuando todavía no se ejecutó el Playground */
+        .report-empty {
+            background: var(--surface);
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+            padding: 48px 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .report-empty .re-icon {
+            font-size: 36px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .report-empty .re-hint {
+            font-size: 12px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Contenedor del reporte generado */
+        .report-content {
+            display: none;
+        }
+
+        .report-content.visible {
+            display: block;
+        }
+
+        /* Tarjetas de las métricas en el reporte */
+        .report-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .report-metric-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+        }
+
+        .report-metric-card .rmc-label {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+        }
+
+        .report-metric-card .rmc-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .report-metric-card .rmc-verdict {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* Colores del veredicto según el valor de R² */
+        .verdict-good {
+            background: rgba(63, 185, 80, 0.15);
+            color: var(--accent2);
+        }
+
+        .verdict-medium {
+            background: rgba(210, 153, 34, 0.15);
+            color: #d29922;
+        }
+
+        .verdict-poor {
+            background: rgba(247, 129, 102, 0.15);
+            color: var(--accent3);
+        }
+
+        /* Bloque de interpretación en lenguaje natural */
+        .report-interpretation {
+            background: var(--surface);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .report-interpretation strong {
+            color: var(--text);
+        }
+
+        /* Sección de limitaciones del modelo */
+        .report-limitations {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+        }
+
+        .report-limitations h3 {
+            font-size: 14px;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .report-limitations ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .report-limitations ul li {
+            font-size: 13px;
+            color: var(--text-muted);
+            padding: 4px 0 4px 18px;
+            position: relative;
+        }
+
+        .report-limitations ul li::before {
+            content: '⚠';
+            position: absolute;
+            left: 0;
+            font-size: 11px;
+        }
+
+        /* Timestamp del reporte */
+        .report-timestamp {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            margin-top: 20px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
 
         /* =============================================
        PANTALLA DE CARGA DE PYODIDE
@@ -1141,10 +1471,67 @@
             <p>Edita el código, cambia parámetros y ejecuta. Los resultados se actualizan en vivo.</p>
         </div>
 
-        <div class="placeholder-content">
-            <span class="icon">⚡</span>
-            Editor completo + gráficas en vivo — <strong>Guía 4</strong>
+
+        <p>
+            Edita el código Python libremente. Cambia <code>test_size</code>,
+            <code>random_state</code>, o cualquier parámetro del modelo.
+            Al ejecutar, las métricas y el gráfico se actualizan en tiempo real
+            y el Reporte (Sección 5) se regenera automáticamente.
+        </p>
+
+        <div class="pg-status-bar" id="pg-status">
+            Listo para ejecutar.
         </div>
+
+        <div class="playground-grid">
+
+            <!-- COLUMNA IZQUIERDA: editor + controles -->
+            <div class="pg-editor-panel">
+                <div class="cm-wrap" id="cm-playground"></div>
+                <div class="pg-controls">
+                    <button class="btn-primary" id="btn-pg-run" onclick="runPlayground()">
+                        ▶ Ejecutar
+                    </button>
+                    <button class="btn-secondary" onclick="resetPlayground()">
+                        ↺ Restablecer
+                    </button>
+                    <button id="btn-ver-reporte" class="btn-secondary" style="display:none;" onclick="irAReporte()">
+                        📋 Ver reporte →
+                    </button>
+
+                </div>
+                <div class="pg-console" id="pg-console">
+                    El output de print() aparecerá aquí.
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: métricas + gráfico -->
+            <div class="pg-results-panel">
+
+                <!-- Tarjetas de métricas -->
+                <div class="metrics-grid">
+                    <div class="metric-card" id="metric-mse">
+                        <div class="metric-name">MSE</div>
+                        <div class="metric-value" id="val-mse">—</div>
+                        <div class="metric-sub">Error Cuadrático Medio</div>
+                    </div>
+                    <div class="metric-card" id="metric-r2">
+                        <div class="metric-name">R²</div>
+                        <div class="metric-value" id="val-r2">—</div>
+                        <div class="metric-sub">Coeficiente de determinación</div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de predicciones -->
+                <div class="pg-plot" id="pg-plot">
+                    <span class="pg-plot-placeholder">
+                        El gráfico aparecerá aquí después de ejecutar.
+                    </span>
+                </div>
+
+            </div>
+        </div>
+
     </section>
 
     <!-- =============================================
@@ -1157,10 +1544,52 @@
             <p>Interpretación automática de los resultados según lo que ejecutaste en el Playground.</p>
         </div>
 
-        <div class="placeholder-content">
-            <span class="icon">📋</span>
-            Reporte dinámico (MSE, R², interpretación) — <strong>Guía 4</strong>
+        <!-- Estado vacío: visible antes de ejecutar el Playground -->
+        <div class="report-empty" id="report-empty">
+            <span class="re-icon">📋</span>
+            <strong>El reporte se genera automáticamente.</strong>
+            <p>Ejecuta el código en el Playground (Sección 4) para ver
+                la interpretación de los resultados aquí.</p>
+            <div class="re-hint">
+                window.AppState.lastResults está vacío todavía.
+            </div>
         </div>
+
+        <!-- Contenido del reporte: oculto hasta que se ejecute el Playground -->
+        <div class="report-content" id="report-content">
+
+            <!-- Métricas con veredicto -->
+            <h2>Métricas del modelo</h2>
+            <div class="report-metrics" id="report-metrics">
+                <!-- Generado por generarReporte() -->
+            </div>
+
+            <!-- Interpretación en lenguaje natural -->
+            <h2>Interpretación</h2>
+            <div class="report-interpretation" id="report-interpretation">
+                <!-- Generado por generarReporte() -->
+            </div>
+
+            <!-- Limitaciones del modelo -->
+            <h2>Limitaciones del modelo</h2>
+            <div class="report-limitations">
+                <ul>
+                    <li>Solo usa <strong>lotsize</strong> como predictor.
+                        El precio también depende de bedrooms, baños, ubicación, etc.</li>
+                    <li>La regresión lineal asume una relación <strong>lineal</strong>.
+                        Si la relación real es curvilínea, el modelo falla.</li>
+                    <li>Los valores extremos (<strong>outliers</strong>) distorsionan
+                        la recta. El dataset tiene casas de $25,000 y $190,000.</li>
+                    <li>El modelo <strong>no puede extrapolar</strong> bien: predecir
+                        precios para lotsize fuera del rango observado es poco confiable.</li>
+                </ul>
+            </div>
+
+            <!-- Timestamp -->
+            <div class="report-timestamp" id="report-timestamp"></div>
+
+        </div>
+
     </section>
 
     <!-- =============================================
@@ -1173,9 +1602,134 @@
             <p>Qué aprendimos, qué limitaciones tiene el modelo, y cómo encaja en el panorama de ML.</p>
         </div>
 
-        <div class="placeholder-content">
-            <span class="icon">🎯</span>
-            Conclusiones e integración del equipo — <strong>Guía 5</strong>
+        <!-- SECCIÓN 6 — CONCLUSIONES E INTEGRACIÓN -->
+
+        <h2>Integración del proyecto</h2>
+        <p>
+            Este proyecto fue desarrollado como una disertación grupal donde cada integrante
+            cubrió un subtema de Machine Learning. Mi rol fue construir esta aplicación web
+            como punto de integración: un espacio donde los conceptos de los demás integrantes
+            cobran vida de forma interactiva.
+        </p>
+
+        <div class="two-col">
+            <div class="col-card accent-blue">
+                <h3>Lo que cubrió el equipo</h3>
+                <ul>
+                    <li>Juan Canaza — Línea de tiempo del ML</li>
+                    <li>Integrante 3 — Datasets y librerías</li>
+                    <li>Integrante 4 — Regresión lineal</li>
+                    <li>Abdair Coca — Reportes, conclusiones e integración</li>
+                </ul>
+            </div>
+            <div class="col-card accent-green">
+                <h3>Lo que integra esta app</h3>
+                <ul>
+                    <li>Sección 1 — Contexto teórico del ML</li>
+                    <li>Sección 2 — El dataset real (Housing)</li>
+                    <li>Sección 3 — El código explicado</li>
+                    <li>Secciones 4 y 5 — Modelo en vivo y reporte</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>Conclusiones del modelo</h2>
+
+        <div class="card">
+            <h3>¿Qué aprendimos sobre el dataset?</h3>
+            <p>
+                El dataset Housing contiene 546 casas con 13 variables. Al explorar los datos
+                en la Sección 2, observamos que el precio varía entre <strong>$25,000 y $190,000</strong>
+                con un promedio de <strong>$68,000</strong>. La variable <code>lotsize</code>
+                tiene una relación positiva con el precio, pero con alta dispersión — lo que
+                anticipaba que un modelo de una sola variable tendría limitaciones.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>¿Qué aprendimos sobre la regresión lineal?</h3>
+            <p>
+                La regresión lineal simple encontró una relación entre el tamaño del lote y
+                el precio de la casa. Sin embargo, el R² obtenido con <code>lotsize</code>
+                como único predictor indica que <strong>el tamaño del lote solo explica
+                    una fracción de la variación del precio</strong>. Variables como el número
+                de habitaciones, baños, acceso a calefacción a gas (<code>gashw</code>) o
+                la zona preferida (<code>prefarea</code>) tienen un impacto que este modelo
+                no captura.
+            </p>
+            <p>
+                Esto no significa que el modelo sea inútil — significa que es un
+                <strong>punto de partida</strong>. En un proyecto real, el siguiente paso
+                sería incluir más variables (regresión múltiple) o probar modelos más
+                complejos como Random Forest o Gradient Boosting.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>¿Qué aprendimos sobre Machine Learning en general?</h3>
+            <p>
+                El proceso que seguimos en esta app — explorar datos, visualizar, dividir
+                en train/test, entrenar, evaluar — es el mismo proceso que se usa en
+                proyectos reales de ML, sin importar la complejidad del modelo. Lo que
+                cambia con modelos más avanzados es la función de entrenamiento, no el flujo.
+            </p>
+        </div>
+
+        <h2>Reflexión sobre la herramienta</h2>
+        <div class="card">
+            <p>
+                Construir esta app implicó resolver un problema real: <strong>¿cómo ejecutar
+                    Python científico en el browser sin un servidor?</strong> La respuesta fue
+                Pyodide — Python compilado a WebAssembly. Esto permitió que la app funcione
+                como un archivo HTML estático, sin backend, desplegable en GitHub Pages.
+            </p>
+            <p>
+                El resultado es una herramienta que cualquier persona puede abrir, modificar
+                el código del modelo, ver cómo cambian las métricas, y leer una interpretación
+                automática — todo sin instalar Python, sin configurar entornos, y sin conocimientos
+                previos de programación.
+            </p>
+        </div>
+
+        <h2>Próximos pasos posibles</h2>
+        <div class="concept-grid">
+
+            <div class="concept-card">
+                <span class="card-icon">📐</span>
+                <div class="card-title">Regresión múltiple</div>
+                <div class="card-body">
+                    Incluir todas las variables del dataset (bedrooms, bathrms, airco, etc.)
+                    y comparar el R² con el modelo actual de una sola variable.
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <span class="card-icon">🌲</span>
+                <div class="card-title">Modelos más complejos</div>
+                <div class="card-body">
+                    Probar Random Forest o Decision Tree, que manejan mejor relaciones
+                    no lineales y variables categóricas como driveway o prefarea.
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <span class="card-icon">⚖️</span>
+                <div class="card-title">Validación cruzada</div>
+                <div class="card-body">
+                    En vez de un solo split train/test, usar k-fold cross validation
+                    para obtener una evaluación más robusta del modelo.
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <span class="card-icon">🚀</span>
+                <div class="card-title">Despliegue real</div>
+                <div class="card-body">
+                    Subir esta app a GitHub Pages. Al ser un archivo HTML estático,
+                    cualquier persona puede acceder sin instalar nada.
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -1206,7 +1760,10 @@
                     _editoresCreados = true;
                     initEditores();
                 }
-
+                // NUEVO: inicializar el Playground al abrir la Sección 4
+                if (target === 's4') {
+                    initSeccion4();
+                }
                 // Forzar remedición de CodeMirror: ahora que s3 es visible,
                 // los editores deben recalcular dimensiones y renderizar el código.
                 if (target === 's3' && window.AppState.editors) {
@@ -2136,10 +2693,8 @@ print(f'RMSE: {mse**0.5:,.2f}  (raiz del MSE, en dolares)')
 print(f'R²  : {r2:.4f}')
 
 # Guardar resultados en AppState para la Sección 5 (Reporte)
-import js
-js.window.AppState.lastResults = js.Object.fromEntries(
-    js.Object.entries({'mse': mse, 'r2': r2}),
-)`,
+import js, json
+js.window.AppState.lastResults = js.JSON.parse(json.dumps({'mse': mse, 'r2': r2}))`,
             '6': `a = model.coef_[0]
 b = model.intercept_
 print(f'Ecuación del modelo:')
@@ -2306,6 +2861,357 @@ _stdout_buf.getvalue()
                 await new Promise(r => setTimeout(r, 200));
             }
         }
+        // ---- CÓDIGO INICIAL DEL PLAYGROUND ----
+        // Es el código completo del proyecto en un solo bloque editable
+        const CODIGO_PLAYGROUND = `import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import io, base64
+
+# Cargar datos
+data = pd.read_csv('/Housing.csv')
+X = data['lotsize']
+y = data['price']
+
+# Dividir el dataset (puedes cambiar test_size y random_state)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Crear y entrenar el modelo
+model = LinearRegression()
+model.fit(X_train.values.reshape(-1, 1), y_train)
+
+# Predicción y métricas
+y_pred = model.predict(X_test.values.reshape(-1, 1))
+mse = mean_squared_error(y_test, y_pred)
+r2  = r2_score(y_test, y_pred)
+print(f'MSE : {mse:,.2f}')
+print(f'RMSE: {mse**0.5:,.2f}')
+print(f'R²  : {r2:.4f}')
+
+# Gráfico: valores reales vs predicciones
+fig, ax = plt.subplots(figsize=(5, 4))
+fig.patch.set_facecolor('#161b22')
+ax.set_facecolor('#161b22')
+ax.scatter(y_test, y_pred, alpha=0.6, color='#58a6ff', s=20)
+x_line = [y_test.min(), y_test.max()]
+ax.plot(x_line, x_line, color='#3fb950', linewidth=1.5, linestyle='--')
+ax.set_xlabel('Valores reales',  color='#8b949e', fontsize=9)
+ax.set_ylabel('Predicciones',    color='#8b949e', fontsize=9)
+ax.set_title('Reales vs Predicciones', color='#e6edf3', fontsize=11, pad=8)
+ax.tick_params(colors='#8b949e', labelsize=8)
+for spine in ax.spines.values(): spine.set_edgecolor('#30363d')
+ax.grid(True, color='#30363d', linewidth=0.4, linestyle='--')
+buf = io.BytesIO()
+plt.savefig(buf, format='png', dpi=110, bbox_inches='tight',
+            facecolor=fig.get_facecolor())
+plt.close()
+buf.seek(0)
+__plot_b64__ = base64.b64encode(buf.read()).decode('utf-8')
+
+__coef__      = float(model.coef_[0])
+__intercept__ = float(model.intercept_)
+
+# Guardar métricas en AppState para el Reporte
+import js, json
+js.window.AppState.lastResults = js.JSON.parse(json.dumps({'mse': float(mse), 'r2': float(r2)}))`;
+
+        // Variable para la instancia del editor del Playground
+        // Se llena en initPlayground()
+        window.AppState.playgroundEditor = null;
+        // ---- INICIALIZAR EDITOR DEL PLAYGROUND ----
+        function initPlayground() {
+            const { EditorView, basicSetup, python, oneDark } = window.CMModules;
+            const container = document.getElementById('cm-playground');
+            if (!container) return;
+
+            window.AppState.playgroundEditor = new EditorView({
+                doc: CODIGO_PLAYGROUND,
+                extensions: [
+                    basicSetup,
+                    python(),
+                    oneDark,
+                    EditorView.lineWrapping,
+                ],
+                parent: container,
+            });
+        }
+        // ---- EJECUTAR EL PLAYGROUND ----
+        async function runPlayground() {
+            if (!window.AppState.pyodideReady) {
+                alert('Python todavía está cargando. Espera el punto verde.');
+                return;
+            }
+
+            const consoleEl = document.getElementById('pg-console');
+            const statusEl = document.getElementById('pg-status');
+            const btnEl = document.getElementById('btn-pg-run');
+            const plotEl = document.getElementById('pg-plot');
+
+            // Leer código actual del editor
+            const codigo = window.AppState.playgroundEditor.state.doc.toString();
+
+            // UI: estado ejecutando
+            consoleEl.className = 'pg-console';
+            consoleEl.textContent = 'Ejecutando...';
+            statusEl.textContent = '⏳ Ejecutando el modelo...';
+            btnEl.disabled = true;
+            document.getElementById('val-mse').textContent = '...';
+            document.getElementById('val-r2').textContent = '...';
+
+            try {
+                const py = window.AppState.pyodide;
+
+                // Redirigir stdout para capturar print()
+                py.runPython(`
+import sys, io as _io
+_stdout_buf = _io.StringIO()
+sys.stdout = _stdout_buf
+    `);
+
+                // Ejecutar el código completo
+                await py.runPythonAsync(codigo);
+
+                // Recuperar print() output
+                const printOutput = py.runPython(`
+sys.stdout = sys.__stdout__
+_stdout_buf.getvalue()
+    `);
+
+                // Mostrar consola
+                consoleEl.className = 'pg-console ok';
+                consoleEl.textContent = printOutput || '(sin output de print)';
+
+                // Recuperar el gráfico base64
+                let plotB64 = null;
+                try {
+                    plotB64 = py.globals.get('__plot_b64__');
+                } catch (_) { }
+
+                let coef = null, intercept = null;
+                try {
+                    coef = py.globals.get('__coef__');
+                    intercept = py.globals.get('__intercept__');
+                } catch (_) { }
+
+                if (plotB64) {
+                    plotEl.innerHTML =
+                        `<img src='data:image/png;base64,${plotB64}'
+             alt='Reales vs Predicciones' />`;
+                }
+
+                // Leer métricas desde AppState (las guardó el código Python)
+                const results = window.AppState.lastResults;
+                if (results) {
+                    const mse = results.mse ?? results.get?.('mse');
+                    const r2 = results.r2 ?? results.get?.('r2');
+
+                    // Actualizar tarjetas de métricas
+                    document.getElementById('val-mse').textContent =
+                        mse ? mse.toLocaleString('en-US', { maximumFractionDigits: 0 }) : '—';
+                    document.getElementById('val-r2').textContent =
+                        r2 !== undefined ? r2.toFixed(4) : '—';
+
+                    // Flash de actualización
+                    ['metric-mse', 'metric-r2'].forEach(id => {
+                        const el = document.getElementById(id);
+                        el.classList.add('updated');
+                        setTimeout(() => el.classList.remove('updated'), 1500);
+                    });
+
+                    // Regenerar el Reporte en la Sección 5
+                    generarReporte(mse, r2, coef, intercept);
+
+                    document.getElementById('btn-ver-reporte').style.display = 'inline-block';
+                }
+
+                statusEl.textContent = '✅ Completado — ' + new Date().toLocaleTimeString();
+
+            } catch (err) {
+                try { window.AppState.pyodide.runPython('sys.stdout = sys.__stdout__'); }
+                catch (_) { }
+                consoleEl.className = 'pg-console error';
+                consoleEl.textContent = '❌ Error:\n' + err.message;
+                statusEl.textContent = '❌ Error al ejecutar';
+
+            } finally {
+                btnEl.disabled = false;
+            }
+        }
+        // ---- RESTABLECER EL PLAYGROUND ----
+        function resetPlayground() {
+            const view = window.AppState.playgroundEditor;
+            if (!view) return;
+
+            // Restaurar código original
+            view.dispatch({
+                changes: { from: 0, to: view.state.doc.length, insert: CODIGO_PLAYGROUND }
+            });
+
+            // Limpiar UI
+            document.getElementById('pg-console').className = 'pg-console';
+            document.getElementById('pg-console').textContent = 'El output de print() aparecerá aquí.';
+            document.getElementById('pg-status').textContent = 'Código restablecido.';
+            document.getElementById('val-mse').textContent = '—';
+            document.getElementById('val-r2').textContent = '—';
+            document.getElementById('pg-plot').innerHTML =
+                '<span class="pg-plot-placeholder">El gráfico aparecerá aquí después de ejecutar.</span>';
+        }
+
+        // ---- REPORTE DINÁMICO ----
+        // Genera la interpretación condicional de MSE y R²
+        function generarReporte(mse, r2, coef = null, intercept = null) {
+            if (mse === undefined || r2 === undefined || mse === null || r2 === null || isNaN(mse) || isNaN(r2)) {
+                return;
+            }
+            const emptyEl = document.getElementById('report-empty');
+            const contentEl = document.getElementById('report-content');
+            const metricsEl = document.getElementById('report-metrics');
+            const interpEl = document.getElementById('report-interpretation');
+            const stampEl = document.getElementById('report-timestamp');
+
+            // ── Determinar veredicto de R² ──────────────────────────
+            let r2Clase, r2Veredicto, r2Color;
+            if (r2 >= 0.8) {
+                r2Clase = 'verdict-good';
+                r2Veredicto = 'Bueno';
+                r2Color = 'var(--accent2)';
+            } else if (r2 >= 0.4) {
+                r2Clase = 'verdict-medium';
+                r2Veredicto = 'Moderado';
+                r2Color = '#d29922';
+            } else {
+                r2Clase = 'verdict-poor';
+                r2Veredicto = 'Débil';
+                r2Color = 'var(--accent3)';
+            }
+
+            // ── Determinar veredicto de MSE ─────────────────────────
+            // El precio promedio del dataset es ~68,000.
+            // Usamos RMSE (raíz del MSE) para compararlo con el precio promedio.
+            const rmse = Math.sqrt(mse);
+            const precioPromedio = 68000;
+            const errorRelativo = (rmse / precioPromedio) * 100;
+
+            let mseVeredicto, mseDescripcion;
+            if (errorRelativo < 20) {
+                mseVeredicto = 'Aceptable';
+                mseDescripcion = 'El error promedio es menor al 20% del precio típico.';
+            } else if (errorRelativo < 35) {
+                mseVeredicto = 'Alto';
+                mseDescripcion = 'El error promedio representa entre el 20% y 35% del precio típico.';
+            } else {
+                mseVeredicto = 'Muy alto';
+                mseDescripcion = 'El error promedio supera el 35% del precio típico.';
+            }
+
+            // ── Generar interpretación en lenguaje natural ──────────
+            let interpretacion;
+            if (r2 >= 0.7) {
+                interpretacion = `
+      El modelo tiene un <strong>buen poder explicativo</strong>:
+      el R² de <strong>${r2.toFixed(4)}</strong> indica que el tamaño del lote
+      explica el <strong>${(r2 * 100).toFixed(1)}%</strong> de la variación
+      en el precio de las casas del dataset.
+      El error promedio de predicción (RMSE) es de
+      <strong>$${rmse.toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>,
+      lo cual es ${mseVeredicto.toLowerCase()} para el rango de precios del dataset.`;
+            } else if (r2 >= 0.4) {
+                interpretacion = `
+      El modelo tiene un <strong>poder predictivo moderado</strong>:
+      el R² de <strong>${r2.toFixed(4)}</strong> indica que el tamaño del lote
+      solo explica el <strong>${(r2 * 100).toFixed(1)}%</strong> de la variación
+      en el precio. Esto sugiere que <strong>otras variables</strong> (número de
+      habitaciones, baños, ubicación) tienen un impacto significativo que este
+      modelo no captura. El RMSE de
+      <strong>$${rmse.toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
+      confirma que las predicciones individuales pueden estar lejos del precio real.`;
+            } else {
+                interpretacion = `
+      El modelo tiene un <strong>poder predictivo débil</strong>:
+      el R² de <strong>${r2.toFixed(4)}</strong> indica que el tamaño del lote
+      solo explica el <strong>${(r2 * 100).toFixed(1)}%</strong> de la variación
+      en el precio. <strong>Usar solo lotsize como predictor no es suficiente</strong>
+      para este dataset. Se recomienda incluir más variables o usar un modelo
+      más complejo. El RMSE de
+      <strong>$${rmse.toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
+      indica errores de predicción muy grandes.`;
+            }
+
+            // ── Renderizar métricas ─────────────────────────────────
+            metricsEl.innerHTML = `
+    <div class='report-metric-card'>
+      <div class='rmc-label'>R² — Coeficiente de determinación</div>
+      <div class='rmc-value' style='color:${r2Color}'>${r2.toFixed(4)}</div>
+      <span class='rmc-verdict ${r2Clase}'>${r2Veredicto}</span>
+    </div>
+    <div class='report-metric-card'>
+      <div class='rmc-label'>MSE — Error Cuadrático Medio</div>
+      <div class='rmc-value' style='color:var(--accent)'>
+        ${mse.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+      </div>
+      <span class='rmc-verdict verdict-medium'>${mseVeredicto}</span>
+    </div>
+    <div class='report-metric-card'>
+      <div class='rmc-label'>RMSE — Raíz del Error Cuadrático Medio</div>
+      <div class='rmc-value' style='color:var(--accent)'>
+        $${rmse.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+      </div>
+      <span class='rmc-verdict verdict-medium'>En dólares</span>
+    </div>
+    <div class='report-metric-card'>
+      <div class='rmc-label'>Error relativo</div>
+      <div class='rmc-value' style='color:var(--accent)'>
+        ${errorRelativo.toFixed(1)}%
+      </div>
+      <span class='rmc-verdict ${errorRelativo < 20 ? "verdict-good" : errorRelativo < 35 ? "verdict-medium" : "verdict-poor"}'>${mseVeredicto}</span>
+    </div>`,
+
+                // ── Renderizar interpretación ───────────────────────────
+                interpEl.innerHTML = interpretacion;
+            if (coef !== null && intercept !== null) {
+                interpEl.innerHTML += `
+    <br><br><strong>Ecuación del modelo:</strong><br>
+    <code>price = ${coef.toFixed(4)} × lotsize + ${intercept.toFixed(2)}</code><br>
+    <small>Por cada pie² adicional de lote, el precio sube $${coef.toFixed(2)}.</small>
+  `;
+            }
+
+
+            // ── Timestamp ───────────────────────────────────────────
+            stampEl.textContent =
+                `Reporte generado el ${new Date().toLocaleDateString('es-ES')}
+     a las ${new Date().toLocaleTimeString('es-ES')}`,
+
+                // ── Mostrar el reporte (ocultar estado vacío) ───────────
+                emptyEl.style.display = 'none';
+            contentEl.classList.add('visible');
+
+        }
+        // ---- COORDINADOR DEL PLAYGROUND ----
+        let _pgInicializado = false;
+
+        // Esta función se llama desde la lógica de navegación
+        // cuando el usuario hace clic en la pestaña 04
+        function initSeccion4() {
+            if (_pgInicializado) return; // solo crear el editor una vez
+            if (!window.AppState.pyodideReady) return;
+            if (!window.CMModules) return;
+            initPlayground();
+            _pgInicializado = true;
+        }
+        // Función JavaScript:
+        function irAReporte() {
+            // Simular clic en la pestaña 05
+            document.querySelector('[data-section="s5"]').click();
+        }
+
+
 
     </script>
 
