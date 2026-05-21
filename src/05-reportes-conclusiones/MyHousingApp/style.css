@@ -207,6 +207,10 @@ body {
     overflow-x: hidden;
 }
 
+body.noscroll {
+    overflow: hidden;
+}
+
 /* =============================================
    FONDO: ORBES DECORATIVOS
 ============================================= */
@@ -1886,6 +1890,11 @@ input[type="number"]:focus {
 }
 
 #pyodide-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+}
+#main-content.hidden {
     opacity: 0;
     pointer-events: none;
     visibility: hidden;

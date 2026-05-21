@@ -9,7 +9,9 @@
     <!-- Fuentes Neural Terminal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <link rel="icon" type="image/png" href="img/favicon.png">
 
     <!-- Pyodide: Python real en el browser -->
@@ -27,7 +29,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="noscroll">
 
     <!-- =============================================
        PANTALLA DE CARGA
@@ -78,7 +80,8 @@
             <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                <path
+                    d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
             </svg>
             <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,21 +90,22 @@
         </button>
 
         <button class="btn-presenter" id="btn-presenter" title="Modo presentación (F)" aria-label="Modo presentación">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
             </svg>
         </button>
     </nav>
-
     <!-- =============================================
        SECCIÓN 1 — ¿Qué es ML?
   ============================================= -->
     <section class="section active" id="s1" data-cursor="default">
         <div class="section-header">
             <div class="section-badge reveal">01 — Introducción</div>
-            <h1>¿Qué es <span class="typed-text" id="s1-typed">Machine Learning?</span><span class="typed-cursor">|</span></h1>
-            <p class="reveal" style="--i:1">Contexto del proyecto y conceptos fundamentales antes de ver el código.</p>
+            <h1>¿Qué es <span class="typed-text" id="s1-typed">Machine Learning?</span><span
+                    class="typed-cursor">|</span></h1>
+            <p class="reveal" style="--i:1">Contexto del proyecto y conceptos fundamentales antes de ver el código.
+            </p>
         </div>
 
         <div class="card reveal">
@@ -265,7 +269,8 @@
 
 
         <div style="display:flex; justify-content:space-between; margin-top:32px;">
-            <button onclick="document.querySelector('[data-section=\'s1\']').click()" class="btn-run" style="background:var(--surface2); color:var(--text); border:1px solid var(--border);">
+            <button onclick="document.querySelector('[data-section=\'s1\']').click()" class="btn-run"
+                style="background:var(--surface2); color:var(--text); border:1px solid var(--border);">
                 ← Anterior sección
             </button>
             <button onclick="document.querySelector('[data-section=\'s3\']').click()" class="btn-run">
@@ -443,7 +448,8 @@
             </div>
             <div class="block-explanation">
                 <code>model.coef_</code> contiene los coeficientes de la recta aprendida, que indican cómo cambia el
-                precio con respecto a cada característica. <code>model.intercept_</code> es el término independiente.
+                precio con respecto a cada característica. <code>model.intercept_</code> es el término
+                independiente.
                 <strong>Requiere haber ejecutado los Bloques 1, 2 y 4 primero.</strong>
             </div>
             <div class="cm-wrap" id="cm-6"></div>
@@ -462,7 +468,8 @@
         </div>
 
         <div style="display:flex; justify-content:space-between; margin-top:32px;">
-            <button onclick="document.querySelector('[data-section=\'s2\']').click()" class="btn-run" style="background:var(--surface2); color:var(--text); border:1px solid var(--border);">
+            <button onclick="document.querySelector('[data-section=\'s2\']').click()" class="btn-run"
+                style="background:var(--surface2); color:var(--text); border:1px solid var(--border);">
                 ← Anterior sección
             </button>
             <button onclick="document.querySelector('[data-section=\'s4\']').click()" class="btn-run">
@@ -479,7 +486,8 @@
         <div class="section-header">
             <div class="section-badge reveal">04 — Playground</div>
             <h1 class="reveal">Playground Interactivo</h1>
-            <p class="reveal">Edita el código, cambia parámetros y ejecuta. Los resultados se actualizan en vivo.</p>
+            <p class="reveal">Edita el código, cambia parámetros y ejecuta. Los resultados se actualizan en vivo.
+            </p>
         </div>
 
 
@@ -544,7 +552,8 @@
         </div>
 
         <div style="display:flex; justify-content:space-between; margin-top:32px;">
-            <button onclick="document.querySelector('[data-section=\'s3\']').click()" class="btn-run" style="background:var(--surface2); color:var(--text); border:1px solid var(--border);">
+            <button onclick="document.querySelector('[data-section=\'s3\']').click()" class="btn-run"
+                style="background:var(--surface2); color:var(--text); border:1px solid var(--border);">
                 ← Anterior sección
             </button>
             <button onclick="document.querySelector('[data-section=\'s5\']').click()" class="btn-run">
@@ -561,7 +570,8 @@
         <div class="section-header">
             <div class="section-badge reveal">05 — Reporte</div>
             <h1 class="reveal">Reporte del Modelo</h1>
-            <p class="reveal">Interpretación automática de los resultados según lo que ejecutaste en el Playground.</p>
+            <p class="reveal">Interpretación automática de los resultados según lo que ejecutaste en el Playground.
+            </p>
         </div>
 
         <!-- Estado vacío: visible antes de ejecutar el Playground -->
@@ -611,7 +621,8 @@
         </div>
 
         <div style="display:flex; justify-content:space-between; margin-top:32px;">
-            <button onclick="document.querySelector('[data-section=\'s4\']').click()" class="btn-run" style="background:var(--surface2); color:var(--text); border:1px solid var(--border);">
+            <button onclick="document.querySelector('[data-section=\'s4\']').click()" class="btn-run"
+                style="background:var(--surface2); color:var(--text); border:1px solid var(--border);">
                 ← Anterior sección
             </button>
             <button onclick="document.querySelector('[data-section=\'s6\']').click()" class="btn-run">
@@ -628,7 +639,8 @@
         <div class="section-header">
             <div class="section-badge reveal">06 — Conclusiones e Integración</div>
             <h1 class="reveal">Conclusiones del Proyecto</h1>
-            <p class="reveal">Qué aprendimos, qué limitaciones tiene el modelo, y cómo encaja en el panorama de ML.</p>
+            <p class="reveal">Qué aprendimos, qué limitaciones tiene el modelo, y cómo encaja en el panorama de ML.
+            </p>
         </div>
 
         <!-- SECCIÓN 6 — CONCLUSIONES E INTEGRACIÓN -->
@@ -715,8 +727,10 @@
                 Construir esta app implicó resolver un problema real: <strong>¿cómo ejecutar
                     Python científico en el browser sin un servidor?</strong> La respuesta fue
                 Pyodide — Python compilado a WebAssembly. Esto permitió que la app funcione
-                como un archivo HTML estático, sin necesidad de un servidor. Sin embargo, la complejidad y el despliegue en Vercel
-                hacen que esta Aplicación Web sea util para entender e inspirar a que se pueda crear mas contenido educativo como este.
+                como un archivo HTML estático, sin necesidad de un servidor. Sin embargo, la complejidad y el
+                despliegue en Vercel
+                hacen que esta Aplicación Web sea util para entender e inspirar a que se pueda crear mas contenido
+                educativo como este.
             </p>
             <p>
                 El resultado es una herramienta que cualquier persona puede abrir, modificar
@@ -757,12 +771,12 @@
             </div>
         </div>
         <div style="display:flex; justify-content:space-between; margin-top:32px;">
-            <button onclick="document.querySelector('[data-section=\'s5\']').click()" class="btn-run" style="background:var(--surface2); color:var(--text); border:1px solid var(--border);">
+            <button onclick="document.querySelector('[data-section=\'s5\']').click()" class="btn-run"
+                style="background:var(--surface2); color:var(--text); border:1px solid var(--border);">
                 ← Anterior sección
             </button>
         </div>
     </section>
-
 
     <!-- Cursor personalizado -->
     <div id="cursor"></div>

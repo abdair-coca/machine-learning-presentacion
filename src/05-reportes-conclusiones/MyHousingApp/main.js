@@ -63,6 +63,7 @@
         const loaderStep = document.getElementById('loader-step');
         const statusDot = document.getElementById('status-dot');
         const statusText = document.getElementById('status-text');
+        const body = document.getElementsByTagName('body');
 
         // Estado global compartido entre secciones
         window.AppState = {
@@ -107,6 +108,7 @@
                 setStatus('ready', 'Python listo');
                 setTimeout(() => {
                     loaderEl.classList.add('hidden');
+                    body[0].classList.remove('noscroll');
                 }, 400);
 
                 // Disparar evento para que otras secciones sepan que está listo
