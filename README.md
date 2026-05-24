@@ -1,101 +1,173 @@
-# Proyecto de Machine Learning
+# 🤖 Machine Learning Interactive Project
 
-## Descripción General
+<p align="center">
+  <img src="./05-reportes-conclusiones/MyHousingApp/img/banner.png" alt="Machine Learning Banner" width="100%">
+</p>
 
-Este repositorio contiene el trabajo grupal de la materia **Programación de Modelos y Simulación**.
+<p align="center">
+  <a href="https://mlhousing520.vercel.app">
+    <img src="https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white">
+  </a>
 
-El objetivo principal del proyecto es presentar conceptos fundamentales de **Machine Learning**, incluyendo:
-- Subcampos de la Inteligencia Artificial
-- Evolución histórica de la IA
-- Datasets y librerías utilizadas en Machine Learning
-- Implementación de un modelo de Regresión Lineal
-- Reportes y conclusiones
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+  <img src="https://img.shields.io/badge/Pyodide-4B8BBE?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Machine%20Learning-FF6F00?style=for-the-badge">
+  <img src="https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white">
+  <img src="https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+  <img src="https://img.shields.io/badge/Scikit--Learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white">
+</p>
+
+<p align="center">
+  🚀 Interactive Machine Learning Platform powered by Pyodide
+</p>
 
 ---
 
-# Integrantes del Equipo
+# 🌐 Live Demo
 
-| Integrante | Responsabilidad |
-|---|---|
-| Roberto Copa | Subcampos de IA |
-| Juan Canaza & Rodrigo Oquendo | Línea de tiempo |
-| Carlos Matos | Datasets y librerías |
-| Moises Torrez | Regresión lineal |
-| Abdair Coca | Reportes, conclusiones e integración del proyecto |
+👉 **Try the application here:**  
+### 🔗 [Open Web Application](https://mlhousing520.vercel.app)
 
 ---
 
-# Tecnologías Utilizadas
+# 📚 Description
+
+This repository contains the final project for the course:
+
+> **Programación de Modelos y Simulación**
+
+The project focuses on explaining and implementing fundamental concepts of **Machine Learning**, including:
+
+- Artificial Intelligence subfields
+- AI historical evolution
+- Datasets and ML libraries
+- Linear Regression implementation
+- Reports and conclusions
+
+---
+
+# 🚀 Project Evolution
+
+The original academic presentation evolved into a fully interactive educational web platform.
+
+The application allows users to:
+
+✅ Explore Machine Learning concepts  
+✅ Edit Python code directly in the browser  
+✅ Execute code in real time using Pyodide  
+✅ Learn interactively through practical examples  
+✅ Visualize organized educational content  
+
+---
+
+# 🖥️ Application Preview
+
+## 🎯 Main Interface
+
+```md
+![Home](./05-reportes-conclusiones/MyHousingApp/img/home.png)
+```
+
+---
+
+## 💻 Code Expleined Block by Block
+
+```md
+![Editor](./05-reportes-conclusiones/MyHousingApp/img/Code.png)
+```
+
+---
+## 💻 Interactive Code Editor
+
+```md
+![Editor](./05-reportes-conclusiones/MyHousingApp/img/editor.png)
+```
+
+---
+
+## ⚡ Python Runtime in Browser
+
+```md
+![Runtime](./05-reportes-conclusiones/MyHousingApp/img/runtime.png)
+```
+
+---
+
+# ✨ Main Features
+
+- 🧠 Python execution directly in the browser
+- 💻 Interactive code editor
+- ⚡ Real-time runtime using Pyodide
+- 📖 Educational Machine Learning content
+- 🎨 Modern UI design
+- 📂 Modular project organization
+- 📊 Practical ML examples
+- 🌐 Online deployment with Vercel
+
+---
+
+# 🛠️ Technologies Used
+
+## 🔹 Machine Learning
 
 - Python
-- Jupyter Notebook
 - NumPy
 - Pandas
 - Matplotlib
 - Scikit-learn
+- Jupyter Notebook
+
+## 🔹 Web Development
+
+- HTML5
+- CSS3
+- JavaScript
+- Pyodide
+- Monaco Editor
 - Git & GitHub
+- Vercel
 
 ---
 
-# Estructura del Proyecto
+# 📁 Project Structure
 
 ```txt
-machine-learning-presentation/
+machine-learning-presentacion/
 │
-├── docs/
-├── data/
-├── notebooks/
-├── src/
-│   ├── 01_subcampos_ia/
-│   ├── 02_linea_tiempo/
-│   ├── 03_dataset_librerias/
-│   ├── 04_regresion_lineal/
-│   └── 05_reportes_conclusiones/
+├── 01-subcampos-ia/
+├── 02-linea-tiempo/
+├── 03-datasets-librerias/
+├── 04-regresion-lineal/
 │
-├── requirements.txt
+├── 05-reportes-conclusiones/
+│   ├── MyHousingApp/
+│   │   ├── img/
+│   │   ├── index.html
+│   │   ├── main.js
+│   │   ├── style.css
+│   │   └── index.html.backup
+│   │
+│   ├── README.md
+│   └── design.md
+│
 ├── .gitignore
 └── README.md
 ```
 
 ---
 
-# Cómo Trabajaremos en Equipo
+# ⚙️ Local Installation
 
-Este proyecto utilizará un flujo de trabajo colaborativo usando Git y GitHub.
-
-## Reglas Importantes
-
-### NO trabajar directamente sobre `main`
-
-Cada integrante debe trabajar en su propia rama.
-
----
-
-### NO modificar archivos de otros integrantes
-
-Cada integrante es responsable de su propia sección.
-
----
-
-### Siempre actualizar antes de comenzar a trabajar
-
-Esto evita conflictos.
-
----
-
-# Guía Paso a Paso
-
-## 1. Clonar el Repositorio
-
-Cada integrante debe clonar el repositorio:
+## 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/abdair-coca/machine-learning-presentacion
+git clone https://github.com/abdair-coca/machine-learning-presentacion.git
 ```
 
 ---
 
-## 2. Entrar a la Carpeta del Proyecto
+## 2️⃣ Navigate into the project
 
 ```bash
 cd machine-learning-presentacion
@@ -103,158 +175,129 @@ cd machine-learning-presentacion
 
 ---
 
-## 3. Crear tu Rama
-
-Cada integrante debe crear una rama para trabajar.
-
-Ejemplos:
+## 3️⃣ Run the web application
 
 ```bash
-git checkout -b feature/subcampos-ia
+cd 05-reportes-conclusiones/MyHousingApp
 ```
+
+Start a local server:
 
 ```bash
-git checkout -b feature/linea-tiempo
+python -m http.server 5500
 ```
 
-```bash
-git checkout -b feature/datasets
-```
-
-```bash
-git checkout -b feature/regresion-lineal
-```
-
-```bash
-git checkout -b feature/reportes
-```
-
----
-
-## 4. Trabajar Solo en tu Carpeta
-
-Ejemplo:
-
-Si tu tema es Regresión Lineal:
+Open in browser:
 
 ```txt
-src/04_regresion_lineal/
-```
-
-No modificar carpetas ajenas sin necesidad.
-
----
-
-## 5. Guardar Cambios
-
-Después de trabajar:
-
-```bash
-git add .
-```
-
-Luego:
-
-```bash
-git commit -m "Agrega explicación de regresión lineal"
+http://localhost:5500
 ```
 
 ---
 
-## 6. Subir Cambios a GitHub
-
-```bash
-git push origin nombre-de-tu-rama
-```
-
-Ejemplo:
-
-```bash
-git push origin feature/regresion-lineal
-```
-
----
-
-# Pull Requests
-
-Después de terminar una parte:
-
-1. Entrar al repositorio en GitHub
-2. Ir a la pestaña "Pull Requests"
-3. Crear un nuevo Pull Request
-4. Solicitar revisión
-
-El líder del proyecto revisará e integrará los cambios.
-
----
-
-# Recomendaciones
-
-## Mantener código limpio
-
-Usar nombres descriptivos:
-- `regresion.py`
-- `dataset_estudiantes.csv`
-
-Evitar nombres como:
-- `codigo_final2.py`
-- `pruebaaaaa.py`
-
----
-
-## Hacer commits claros
-
-Mal ejemplo:
-
-```bash
-git commit -m "cosas"
-```
-
-Buen ejemplo:
-
-```bash
-git commit -m "Agrega modelo de regresión lineal con sklearn"
-```
-
----
-
-## No subir archivos innecesarios
-
-NO subir:
-- carpetas `venv`
-- archivos temporales
-- archivos pesados innecesarios
-
-El archivo `.gitignore` ya está configurado para ayudar con esto.
-
----
-
-# Librerías Principales
+# 📖 Core Libraries
 
 ## NumPy
-Utilizada para operaciones matemáticas y arreglos numéricos.
+
+Used for numerical operations and array manipulation.
+
+---
 
 ## Pandas
-Utilizada para manipulación y análisis de datos.
+
+Used for data analysis and manipulation.
+
+---
 
 ## Matplotlib
-Utilizada para crear gráficos y visualizaciones.
+
+Used for data visualization and plotting.
+
+---
 
 ## Scikit-learn
-Utilizada para construir modelos de Machine Learning.
+
+Used for building Machine Learning models.
 
 ---
 
-# Objetivo del Proyecto
+## Pyodide
 
-Además de realizar la exposición, este proyecto busca:
-- aprender trabajo colaborativo con GitHub
-- organizar código profesionalmente
-- practicar Machine Learning básico
-- desarrollar buenas prácticas de programación
+Allows Python execution directly inside the browser using WebAssembly.
 
 ---
 
-# Estado del Proyecto
+# 🎯 Achievements
 
-En desarrollo.
+- ✅ Learned Machine Learning fundamentals
+- ✅ Implemented ML models with Python
+- ✅ Applied collaborative GitHub workflows
+- ✅ Organized code professionally
+- ✅ Built an educational web platform
+- ✅ Integrated Python runtime into the browser
+- ✅ Improved educational interaction through live coding
+
+---
+
+# 👥 Team Members
+
+| Member | Responsibility |
+|---|---|
+| Roberto Copa | AI Subfields |
+| Juan Canaza & Rodrigo Oquendo | Timeline |
+| Carlos Matos | Datasets & Libraries |
+| Moises Torrez | Linear Regression |
+| Abdair Coca | Reports, conclusions, project integration and interactive web platform development |
+
+---
+
+# 🌟 Interactive Platform Development
+
+The interactive web application was designed and implemented by **Abdair Coca** as part of the reports and conclusions section of the project.
+
+The goal was to transform a traditional presentation into an interactive educational experience where users can:
+
+- visualize concepts
+- modify code
+- execute examples
+- experiment directly in the browser
+
+---
+
+# 📌 Best Practices Applied
+
+- 📂 Modular architecture
+- 🧹 Clean and maintainable code
+- 🏷️ Descriptive naming conventions
+- 🌿 Git branching workflow
+- 📄 Clear documentation
+- ♻️ Separation of responsibilities
+- 🚀 Interactive-first educational design
+
+---
+
+# 📈 Future Improvements
+
+- 🔥 More Machine Learning models
+- 📊 Interactive charts
+- 💾 Code persistence
+- 📁 Custom dataset upload
+- 🧠 Deep Learning integration
+
+---
+
+# 📌 Project Status
+
+🟢 Completed  
+🟢 Fully functional web platform  
+🟢 Pyodide integration finished  
+🟢 Deployed on Vercel  
+🟢 Documentation completed  
+
+---
+
+# ⭐ Support
+
+If you liked this project, consider giving it a star ⭐
+
+---
