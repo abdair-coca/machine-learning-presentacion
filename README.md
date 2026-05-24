@@ -82,7 +82,7 @@ The application allows users to:
 
 
 ![Editor](./src/05-reportes-conclusiones/MyHousingApp/img/editor.)
-```
+
 
 ---
 
@@ -90,7 +90,7 @@ The application allows users to:
 
 
 ![Runtime](./src/05-reportes-conclusiones/MyHousingApp/img/runtime.)
-```
+
 
 ---
 
