@@ -1,7 +1,7 @@
 # 🤖 Machine Learning Interactive Project
 
 <p align="center">
-  <img src="./05-reportes-conclusiones/MyHousingApp/img/banner.png" alt="Machine Learning Banner" width="100%">
+  <img src="/src/05-reportes-conclusiones/MyHousingApp/img/banner.svg" alt="Machine Learning Banner" width="100%">
 </p>
 
 <p align="center">
@@ -27,7 +27,7 @@
 # 🌐 Live Demo
 
 👉 **Try the application here:**  
-### 🔗 [Open Web Application](https://mlhousing520.vercel.app)
+### 🔗 [Open mlhousing Web](https://mlhousing520.vercel.app)
 
 ---
 
@@ -66,7 +66,7 @@ The application allows users to:
 ## 🎯 Main Interface
 
 ```md
-![Home](./05-reportes-conclusiones/MyHousingApp/img/home.png)
+![Home](./src/05-reportes-conclusiones/MyHousingApp/img/home.png)
 ```
 
 ---
@@ -74,14 +74,14 @@ The application allows users to:
 ## 💻 Code Expleined Block by Block
 
 ```md
-![Editor](./05-reportes-conclusiones/MyHousingApp/img/Code.png)
+![Editor](./src/05-reportes-conclusiones/MyHousingApp/img/Code.png)
 ```
 
 ---
 ## 💻 Interactive Code Editor
 
 ```md
-![Editor](./05-reportes-conclusiones/MyHousingApp/img/editor.png)
+![Editor](./src/05-reportes-conclusiones/MyHousingApp/img/editor.png)
 ```
 
 ---
@@ -89,7 +89,7 @@ The application allows users to:
 ## ⚡ Python Runtime in Browser
 
 ```md
-![Runtime](./05-reportes-conclusiones/MyHousingApp/img/runtime.png)
+![Runtime](./src/05-reportes-conclusiones/MyHousingApp/img/runtime.png)
 ```
 
 ---
