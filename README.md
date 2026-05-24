@@ -65,31 +65,31 @@ The application allows users to:
 
 ## 🎯 Main Interface
 
-```md
+
 ![Home](./src/05-reportes-conclusiones/MyHousingApp/img/home.png)
-```
+
 
 ---
 
 ## 💻 Code Expleined Block by Block
 
-```md
+
 ![Editor](./src/05-reportes-conclusiones/MyHousingApp/img/Code.png)
-```
+
 
 ---
 ## 💻 Interactive Code Editor
 
-```md
-![Editor](./src/05-reportes-conclusiones/MyHousingApp/img/editor.png)
+
+![Editor](./src/05-reportes-conclusiones/MyHousingApp/img/editor.)
 ```
 
 ---
 
 ## ⚡ Python Runtime in Browser
 
-```md
-![Runtime](./src/05-reportes-conclusiones/MyHousingApp/img/runtime.png)
+
+![Runtime](./src/05-reportes-conclusiones/MyHousingApp/img/runtime.)
 ```
 
 ---
