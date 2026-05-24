@@ -81,7 +81,7 @@ The application allows users to:
 ## 💻 Interactive Code Editor
 
 
-![Editor](./src/05-reportes-conclusiones/MyHousingApp/img/editor.)
+![Editor](./src/05-reportes-conclusiones/MyHousingApp/img/editor.png)
 
 
 ---
@@ -89,7 +89,7 @@ The application allows users to:
 ## ⚡ Python Runtime in Browser
 
 
-![Runtime](./src/05-reportes-conclusiones/MyHousingApp/img/runtime.)
+![Runtime](./src/05-reportes-conclusiones/MyHousingApp/img/runtime.png)
 
 
 ---
