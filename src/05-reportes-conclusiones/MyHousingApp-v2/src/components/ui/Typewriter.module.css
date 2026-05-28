@@ -1,0 +1,15 @@
+.wrap {
+  display: inline;
+}
+
+.caret {
+  display: inline-block;
+  margin-left: 2px;
+  color: var(--accent-teal);
+  animation: blink 800ms step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}

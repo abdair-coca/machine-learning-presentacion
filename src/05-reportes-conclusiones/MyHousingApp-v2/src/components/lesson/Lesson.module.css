@@ -1,0 +1,220 @@
+.lesson {
+  position: relative;
+  z-index: 1;
+}
+
+.hero {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-5) var(--space-5);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-teal);
+  background: rgba(29, 201, 138, 0.08);
+  border: 1px solid var(--border-active);
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin-bottom: var(--space-4);
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+}
+
+.hero p {
+  font-size: clamp(1rem, 1.7vw, 1.18rem);
+  color: var(--text-secondary);
+  max-width: 720px;
+}
+
+/* ---- Stage (área de la sección activa) ---- */
+.stage {
+  position: relative;
+  padding: var(--space-6) 0 var(--space-8);
+}
+
+.stageInner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+  min-height: 60vh;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.sectionHead {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sectionNum {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--accent-teal);
+  padding: 8px 12px;
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius-sm);
+  background: rgba(29, 201, 138, 0.08);
+  box-shadow: 0 0 12px rgba(29, 201, 138, 0.18);
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+.sectionHead h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.sectionHead p {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  max-width: 720px;
+}
+
+.sectionBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ---- Section 3 — progreso de bloques ---- */
+.codeProgress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.codeProgressTrack {
+  flex: 1;
+  height: 3px;
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.codeProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-teal), var(--accent-violet));
+  border-radius: 2px;
+  box-shadow: 0 0 10px var(--accent-teal);
+  transition: width 0.5s var(--ease-spring);
+}
+
+.codeProgressLabel {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.codeStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ---- Section 4 — split layout (editor + métricas) ---- */
+.split {
+  display: grid;
+  grid-template-columns: 6fr 4fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.splitMain { min-width: 0; }
+
+.splitSide {
+  position: sticky;
+  top: calc(var(--nav-height) + 72px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  backdrop-filter: blur(8px);
+}
+
+.sideLabel {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-violet);
+  font-weight: 700;
+}
+
+.sideHint {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: var(--space-2);
+}
+
+@media (max-width: 1024px) {
+  .split { grid-template-columns: 1fr; }
+  .splitSide { position: static; }
+}
+
+/* ---- Section footer (nav anterior/siguiente) ---- */
+.sectionFoot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+  margin-top: var(--space-4);
+}
+
+.footHint {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* ---- Presenter mode ---- */
+:global(body.presenter-mode) .hero { padding-top: var(--space-4); }
+:global(body.presenter-mode) .hero h1 { font-size: clamp(2.5rem, 7vw, 4.5rem); }
+:global(body.presenter-mode) .stage { padding-top: var(--space-3); }
+:global(body.presenter-mode) .sectionFoot { opacity: 0.4; }
+
+@media (max-width: 720px) {
+  .sectionHead { flex-direction: column; gap: var(--space-3); }
+  .hero { padding-top: var(--space-5); }
+}

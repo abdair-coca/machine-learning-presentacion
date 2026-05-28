@@ -1,0 +1,57 @@
+.idle,
+.running,
+.error,
+.success {
+  background: #0A0E16;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 0.83rem;
+  color: var(--text-code);
+  min-height: 64px;
+}
+
+.idle { color: var(--text-muted); font-style: italic; }
+
+.running {
+  color: var(--accent-amber);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent-amber);
+  animation: blink 1s infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+.error {
+  border-color: rgba(255, 107, 107, 0.4);
+  color: var(--accent-coral);
+  white-space: pre-wrap;
+}
+
+.success { color: var(--text-code); }
+
+.stdout {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--font-mono);
+  margin-bottom: var(--space-3);
+}
+
+.muted { color: var(--text-muted); font-style: italic; }
+
+.timing {
+  margin-top: var(--space-3);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+}

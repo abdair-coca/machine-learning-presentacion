@@ -1,0 +1,34 @@
+.editor {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-elevated);
+}
+
+.editor :global(.cm-editor) {
+  background: transparent !important;
+}
+
+.editor :global(.cm-focused) {
+  outline: none !important;
+}
+
+.editor :global(.cm-gutters) {
+  background: var(--bg-surface) !important;
+  border-right: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.editor :global(.cm-activeLine),
+.editor :global(.cm-activeLineGutter) {
+  background-color: rgba(29, 201, 138, 0.05) !important;
+}
+
+[data-theme='light'] .editor :global(.cm-editor) {
+  background: #F8F9FB !important;
+  color: #1A2233 !important;
+}
+[data-theme='light'] .editor :global(.cm-gutters) {
+  background: #ECEFF4 !important;
+  color: var(--text-muted);
+}

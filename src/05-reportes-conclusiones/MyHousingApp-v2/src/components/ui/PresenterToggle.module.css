@@ -1,0 +1,26 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-glass);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-spring);
+}
+
+.btn:hover {
+  border-color: var(--border-active);
+  color: var(--accent-teal);
+  box-shadow: var(--glow-teal);
+}
+
+.btn[data-active='true'] {
+  background: rgba(29, 201, 138, 0.12);
+  border-color: var(--border-active);
+  color: var(--accent-teal);
+  box-shadow: var(--glow-teal);
+}

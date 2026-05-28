@@ -1,0 +1,145 @@
+/* =========================================================
+   Globals — reset + tipografía + body con grid de fondo
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-void);
+  background-image:
+    linear-gradient(rgba(29, 201, 138, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 201, 138, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s var(--ease-spring), color 0.3s var(--ease-spring);
+}
+
+[data-theme="light"] body {
+  background-image:
+    linear-gradient(rgba(15, 155, 110, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 155, 110, 0.04) 1px, transparent 1px);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+h1 { font-size: clamp(2rem, 4vw, 3rem); }
+h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); }
+h3 { font-size: 1.35rem; }
+h4 { font-size: 1.1rem; }
+
+p {
+  color: var(--text-secondary);
+}
+
+a {
+  color: var(--accent-teal);
+  text-decoration: none;
+  transition: color 0.2s var(--ease-spring);
+}
+
+a:hover { color: var(--text-primary); }
+
+code, pre, kbd {
+  font-family: var(--font-mono);
+}
+
+::selection {
+  background: rgba(29, 201, 138, 0.30);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] ::selection {
+  background: rgba(15, 155, 110, 0.25);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Modo presentación — calma todo lo distractivo */
+body.presenter-mode .__bg-orbs__layer { opacity: 0.45; }
+body.presenter-mode footer[data-app-footer] { display: none; }
+body.presenter-mode .__hide-on-presenter__ { opacity: 0; pointer-events: none; }
+
+/* Reveal helpers globales */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: revealUp 0.6s var(--ease-spring) forwards;
+}
+.reveal-stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.reveal-stagger > *:nth-child(2) { animation-delay: 0.12s; }
+.reveal-stagger > *:nth-child(3) { animation-delay: 0.19s; }
+.reveal-stagger > *:nth-child(4) { animation-delay: 0.26s; }
+.reveal-stagger > *:nth-child(5) { animation-delay: 0.33s; }
+.reveal-stagger > *:nth-child(6) { animation-delay: 0.40s; }
+.reveal-stagger > *:nth-child(7) { animation-delay: 0.47s; }
+.reveal-stagger > *:nth-child(8) { animation-delay: 0.54s; }
+
+@keyframes revealUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Scrollbar discreto */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-teal-dim);
+}

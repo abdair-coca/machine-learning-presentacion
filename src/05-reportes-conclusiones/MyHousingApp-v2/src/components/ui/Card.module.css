@@ -1,0 +1,31 @@
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.3s var(--ease-spring), transform 0.3s var(--ease-spring),
+    box-shadow 0.3s var(--ease-spring), background 0.3s var(--ease-spring);
+  position: relative;
+  overflow: hidden;
+}
+
+.card[data-padded='true'] {
+  padding: var(--space-5);
+}
+
+.card[data-glow='teal']:hover {
+  border-color: var(--border-active);
+  box-shadow: var(--glow-teal);
+  transform: translateY(-2px);
+}
+
+.card[data-glow='violet']:hover {
+  border-color: rgba(157, 127, 255, 0.4);
+  box-shadow: var(--glow-violet);
+  transform: translateY(-2px);
+}
+
+.card[data-glow='amber']:hover {
+  border-color: rgba(245, 166, 35, 0.4);
+  box-shadow: var(--glow-amber);
+  transform: translateY(-2px);
+}
