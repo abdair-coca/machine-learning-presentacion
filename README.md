@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://mlhousing520.vercel.app">
+  <a href="https://machine-learning-app-gilt.vercel.app">
     <img src="https://img.shields.io/badge/Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white">
   </a>
 
