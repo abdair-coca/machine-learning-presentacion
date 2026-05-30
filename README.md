@@ -27,7 +27,7 @@
 # 🌐 Live Demo
 
 👉 **Try the application here:**  
-### 🔗 [Open mlhousing Web](https://mlhousing520.vercel.app)
+### 🔗 [Open mlhousing Web](https://machine-learning-app-gilt.vercel.app)
 
 ---
 
