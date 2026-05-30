@@ -67,7 +67,7 @@ export const linearRegressionLesson: LessonSpec = {
       { column: 'lotsize', type: 'range', label: 'Lotsize (ft²)', min: 0, max: 20000, step: 100 },
     ],
     plots: [],
-    pageSize: 12,
+    pageSize: 10,
   },
 
   codeSteps: [

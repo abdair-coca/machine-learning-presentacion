@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { usePyStore, pyodideRef } from '../../store/pyodide';
+import { lessons } from '../../lessons';
 
 const PYODIDE_VERSION = '0.26.4';
 const CDN_URL = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/pyodide.js`;
@@ -57,15 +58,24 @@ export function PyodideProvider({ children }: { children: ReactNode }) {
           usePyStore.getState().addPackages([pkg]);
         }
 
-        // Pre-cargar el CSV en el FS virtual
-        store.setProgress(95, 'Cargando dataset…');
-        try {
-          const res = await fetch('/datasets/Housing.csv');
-          const txt = await res.text();
-          py.FS.writeFile('/Housing.csv', txt);
-        } catch (e) {
-          console.warn('No se pudo precargar Housing.csv', e);
-        }
+        // Pre-cargar TODOS los datasets de las lecciones en el FS virtual de Pyodide.
+        // Cada lección declara su dataset.path (ej. /datasets/xor.csv) y el código Python
+        // los lee como /xor.csv en el FS virtual.
+        store.setProgress(95, 'Cargando datasets…');
+        const datasetPaths = [...new Set(lessons.map((l) => l.dataset.path).filter(Boolean))];
+        await Promise.all(
+          datasetPaths.map(async (urlPath) => {
+            try {
+              const res = await fetch(urlPath);
+              const txt = await res.text();
+              // /datasets/xor.csv → /xor.csv  (igual que el provider original)
+              const vfsPath = '/' + urlPath.split('/').pop();
+              py.FS.writeFile(vfsPath, txt);
+            } catch (e) {
+              console.warn('No se pudo precargar', urlPath, e);
+            }
+          }),
+        );
 
         // Bridge: exponer publish a Python para que el código pueda hacer
         // `js.window.publishResults({'mse': ..., 'r2': ...})`.

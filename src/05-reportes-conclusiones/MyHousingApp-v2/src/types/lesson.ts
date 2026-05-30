@@ -78,6 +78,8 @@ export interface DatasetConfig {
   targetCol: string;
   featureCols: string[];
   meanTarget?: number;
+  /** Si el target es moneda (precio). Default true. Pásalo false para clasificación, ratios, etc. */
+  targetIsCurrency?: boolean;
 }
 
 export interface LessonSpec {
@@ -104,4 +106,6 @@ export interface RunResult {
   returnValue?: unknown;
   error?: string;
   durationMs: number;
+  /** Lo que el código publicó vía `js.window.publishResults({...})` DURANTE esta ejecución (no globalmente). */
+  published?: Record<string, unknown>;
 }

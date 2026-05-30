@@ -1,7 +1,8 @@
+import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePyStore } from '../../store/pyodide';
-import type { LessonSpec } from '../../types/lesson';
+import type { LessonSpec, RunResult } from '../../types/lesson';
 import { useSectionRouter } from '../../hooks/useSectionRouter';
 import { Typewriter } from '../ui/Typewriter';
 import { Button } from '../ui/Button';
@@ -13,6 +14,8 @@ import { Playground } from '../code/Playground';
 import { MetricGrid } from '../data/MetricCard';
 import { DatasetTable } from '../data/DatasetTable';
 import { DatasetStats } from '../data/DatasetStats';
+import { ParameterPanel } from '../interactive/ParameterPanel';
+import { applyParams, defaultParamValues } from '../../lib/templating';
 import styles from './Lesson.module.css';
 
 const TABS: LessonTab[] = [
@@ -45,6 +48,41 @@ const SECTION_DESC: Record<number, string> = {
 export function Lesson({ spec }: { spec: LessonSpec }) {
   const { current, goTo } = useSectionRouter(TABS.length, 1);
   const globals = usePyStore((s) => s.globals);
+
+  /**
+   * Métricas locales del Playground. NO usan el store global a propósito:
+   * así el panel "Métricas en vivo" sólo se llena cuando el usuario ejecuta
+   * el código del propio Playground, no cuando ejecuta bloques de la
+   * sección 3 (que también publican al store global y alimentan el Reporte).
+   */
+  const [playgroundMetrics, setPlaygroundMetrics] = useState<Record<string, number | undefined>>({});
+
+  // Valores actuales de los sliders/selects del Playground.
+  // Cuando cambian, `effectivePlaygroundCode` se recalcula y Playground (con
+  // autoRunOnCodeChange) sincroniza el editor y re-ejecuta debounced.
+  const [paramValues, setParamValues] = useState<Record<string, number | string>>(() =>
+    defaultParamValues(spec.parameters),
+  );
+
+  const hasParams = !!spec.parameters?.length;
+  const effectivePlaygroundCode = useMemo(
+    () => (hasParams ? applyParams(spec.playgroundCode, paramValues) : spec.playgroundCode),
+    [spec.playgroundCode, paramValues, hasParams],
+  );
+
+  function handlePlaygroundResult(result: RunResult) {
+    if (result.error || !result.published) return;
+    const next: Record<string, number | undefined> = {};
+    for (const m of spec.metrics) {
+      const raw = result.published[m.key];
+      next[m.key] = typeof raw === 'number' ? raw : undefined;
+    }
+    setPlaygroundMetrics(next);
+  }
+
+  function handlePlaygroundReset() {
+    setPlaygroundMetrics({});
+  }
 
   const metricValues: Record<string, number | undefined> = {};
   for (const m of spec.metrics) {
@@ -114,7 +152,7 @@ export function Lesson({ spec }: { spec: LessonSpec }) {
                       csvPath={spec.dataset.path}
                       targetCol={spec.dataset.targetCol}
                       targetLabel={spec.dataset.targetCol}
-                      currency
+                      currency={spec.dataset.targetIsCurrency ?? true}
                     />
                     <DatasetTable
                       csvPath={spec.dataset.path}
@@ -143,20 +181,48 @@ export function Lesson({ spec }: { spec: LessonSpec }) {
                   </>
                 )}
 
-                {current === 4 && (
-                  <div className={styles.split}>
-                    <div className={styles.splitMain}>
-                      <Playground initialCode={spec.playgroundCode} title={spec.title} />
+                {current === 4 && (() => {
+                  const hasPlaygroundMetrics = Object.values(playgroundMetrics).some(
+                    (v) => typeof v === 'number',
+                  );
+                  return (
+                    <div className={styles.split}>
+                      <div className={styles.splitMain}>
+                        <Playground
+                          initialCode={effectivePlaygroundCode}
+                          title={spec.title}
+                          onResult={handlePlaygroundResult}
+                          onReset={handlePlaygroundReset}
+                          autoRunOnCodeChange={hasParams}
+                          debounceMs={300}
+                        />
+                      </div>
+                      <aside className={styles.splitSide}>
+                        {hasParams && spec.parameters && (
+                          <ParameterPanel
+                            parameters={spec.parameters}
+                            values={paramValues}
+                            onCommit={setParamValues}
+                          />
+                        )}
+                        <div className={styles.sideLabel}>
+                          Métricas del Playground
+                          {hasPlaygroundMetrics && <span className={styles.sideDot} aria-hidden />}
+                        </div>
+                        <MetricGrid specs={spec.metrics} values={playgroundMetrics} />
+                        <p className={styles.sideHint}>
+                          {hasPlaygroundMetrics
+                            ? hasParams
+                              ? 'Mueve los sliders: el modelo se reentrena automáticamente al soltar.'
+                              : 'Resultados de tu última ejecución. Cambia parámetros y vuelve a ejecutar.'
+                            : hasParams
+                              ? 'Mueve un slider o pulsa "Ejecutar" para entrenar la red.'
+                              : 'Ejecuta el código del Playground para ver tus métricas aquí.'}
+                        </p>
+                      </aside>
                     </div>
-                    <aside className={styles.splitSide}>
-                      <div className={styles.sideLabel}>Métricas en vivo</div>
-                      <MetricGrid specs={spec.metrics} values={metricValues} />
-                      <p className={styles.sideHint}>
-                        Se actualizan al ejecutar el Playground o el bloque 5.
-                      </p>
-                    </aside>
-                  </div>
-                )}
+                  );
+                })()}
 
                 {current === 5 && (
                   <>

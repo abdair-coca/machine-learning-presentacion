@@ -12,7 +12,7 @@ interface Props {
   pageSize?: number;
 }
 
-export function DatasetTable({ csvPath, visibleColumns, filters = [], pageSize = 12 }: Props) {
+export function DatasetTable({ csvPath, visibleColumns, filters = [], pageSize = 10 }: Props) {
   const [rows, setRows] = useState<Record<string, string>[]>([]);
   const [page, setPage] = useState(0);
   const [filterValues, setFilterValues] = useState<Record<string, { min: string; max: string }>>(() =>

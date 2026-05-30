@@ -1,5 +1,4 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { Brain } from 'lucide-react';
 import { ThemeToggle } from './components/ui/ThemeToggle';
 import { PyodideStatusBadge } from './components/ui/PyodideStatusBadge';
 import { PresenterToggle } from './components/ui/PresenterToggle';
@@ -15,7 +14,6 @@ export function App() {
       <nav className={`${styles.nav} __hide-on-presenter__`}>
         <div className={styles.navInner}>
           <Link to="/" className={styles.brand}>
-            <Brain size={18} />
             <span>ml<span className={styles.brandSlash}>/</span>lab</span>
           </Link>
           <div className={styles.navRight}>

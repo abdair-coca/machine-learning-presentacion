@@ -43,6 +43,16 @@ export function CodeBlock({ step, index, total }: Props) {
           </span>
           <h3>{step.title}</h3>
         </div>
+      </header>
+
+      {step.explanationMd && (
+        <div className={styles.explanation}>
+          <ReactMarkdown>{step.explanationMd}</ReactMarkdown>
+        </div>
+      )}
+
+      <CodeEditor ref={editor} initialDoc={step.code} />
+      
         <div className={styles.actions}>
           <Button variant="ghost" size="sm" iconLeft={<RotateCcw size={14} />} onClick={handleReset}>
             Reset
@@ -58,15 +68,6 @@ export function CodeBlock({ step, index, total }: Props) {
             Ejecutar
           </Button>
         </div>
-      </header>
-
-      {step.explanationMd && (
-        <div className={styles.explanation}>
-          <ReactMarkdown>{step.explanationMd}</ReactMarkdown>
-        </div>
-      )}
-
-      <CodeEditor ref={editor} initialDoc={step.code} />
 
       <PyOutput state={state} />
     </article>

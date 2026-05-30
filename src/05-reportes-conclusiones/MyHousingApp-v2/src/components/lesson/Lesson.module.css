@@ -168,12 +168,29 @@
 }
 
 .sideLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent-violet);
   font-weight: 700;
+}
+
+.sideDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-teal);
+  box-shadow: 0 0 8px var(--accent-teal);
+  animation: sideDotPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes sideDotPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
 }
 
 .sideHint {

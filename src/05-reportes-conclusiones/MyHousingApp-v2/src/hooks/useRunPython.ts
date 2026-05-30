@@ -9,9 +9,11 @@ import type { RunResult } from '../types/lesson';
  *   - Asignar `__plot_b64__ = "..."` para mostrar un gráfico.
  *   - Llamar `js.window.publishResults({"mse": ..., "r2": ...})`
  *     para alimentar las MetricCard.
- *   - Cualquier cosa que el código retorne (última expresión) se devuelve
- *     en returnValue; si es una string base64 larga sin espacios, se trata
- *     como imagen (compat con bloques del vanilla).
+ *
+ * Importante: el hook captura LOCALMENTE lo que el código publicó durante esta
+ * llamada (en `result.published`), además de alimentar el store global. Así un
+ * consumidor (p.ej. el panel del Playground) puede mostrar SOLO las métricas
+ * de su propia ejecución, sin contaminarse con las de otros bloques.
  */
 export function useRunPython() {
   return useCallback(async (code: string): Promise<RunResult> => {
@@ -33,6 +35,20 @@ import sys, io as _io
 _stdout_buf = _io.StringIO()
 sys.stdout = _stdout_buf
 `);
+
+    // 2) Interceptar publishResults para capturar localmente lo de ESTA ejecución
+    const captured: Record<string, unknown> = {};
+    const originalPublish = (window as any).publishResults as
+      | ((obj: Record<string, unknown>) => void)
+      | undefined;
+    (window as any).publishResults = (obj: Record<string, unknown>) => {
+      const src = (obj as any)?.toJs
+        ? Object.fromEntries((obj as any).toJs())
+        : obj ?? {};
+      for (const [k, v] of Object.entries(src)) captured[k] = v;
+      // Seguimos delegando al original (que alimenta el store global usado por la sección Reporte)
+      if (originalPublish) originalPublish(obj);
+    };
 
     try {
       const returnValue = await py.runPythonAsync(code);
@@ -68,6 +84,7 @@ _stdout_buf.getvalue()
         plotB64,
         returnValue,
         durationMs: performance.now() - start,
+        published: Object.keys(captured).length ? captured : undefined,
       };
     } catch (err) {
       try {
@@ -80,6 +97,9 @@ _stdout_buf.getvalue()
         error: err instanceof Error ? err.message : String(err),
         durationMs: performance.now() - start,
       };
+    } finally {
+      // Restaurar el publisher original (idempotente)
+      (window as any).publishResults = originalPublish;
     }
   }, []);
 }
